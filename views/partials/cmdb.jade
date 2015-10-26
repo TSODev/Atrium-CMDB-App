@@ -1,0 +1,99 @@
+.container
+  .container-fluid  
+    .row
+      nav.navbar.navbar-default(role='navigation')
+        .navbar-inner
+          a.navbar-brand
+            img.navlogo(alt="bmc" src="images/bmc_dna.png")
+          ul.nav.navbar-nav
+            li
+              a(ng-click="goHome()",href='#/query') Home
+            li.dropdown
+              a.dropdown-toggle(data-toggle='dropdown')
+                | Actions 
+                b.caret
+              ul.dropdown-menu
+                li
+                  a(ng-click="ModalExport()", data-toggle="modal", data-target="#ExportModal" ) Export
+          ul.nav.navbar-nav.pull-right
+            li.dropdown
+              a.dropdown-toggle(data-toggle='dropdown')
+                | User 
+                b.caret
+              ul.dropdown-menu.dropdown-menu-right
+                li
+                  a(href='#') Info
+                li
+                  a(href='#') Disconnect
+                li.divider
+                li
+                  a(href='#') Preferences
+                li.divider
+                li
+                  a(href='#') About
+.panel.panel-default
+  .panel-heading
+    h5 {{ heading }}
+  .panel-body
+    form.form-filter
+      h3 {{title}}
+      .input-group
+        span.input-group-addon Filter
+        input#filter.form-control(type="search", name="filter", placeholder="type to filter - (filtering by Name)", ng-model="thefilter")
+  table.table.table-striped.table-bordered.table-hover.table-condensed
+    thead
+      tr
+        th
+        th ClassName
+        th Name
+        th 
+        th(style="opacity: 0; display: none;") 
+    tbody
+      tr(ng-repeat="i in filteredItems", ng-if="instances")
+        td
+        td(ng-click="ModalDetails(i.attributes.InstanceId)" data-toggle="modal", data-target="#MyModal") {{ i.attributes.ClassId }}
+        td(ng-click="ModalDetails(i.attributes.InstanceId)" data-toggle="modal", data-target="#MyModal") {{ i.attributes.Name }}
+        td
+          button.btn.btn-large.btn-primary.btn-intable(ng-click="Graph(i.attributes.InstanceId)") Graph 
+        td(style="opacity: 0; display: none;")
+  .panel-footer
+    h5 Footer - {{ footermessage }}
+#MyModal.modal.fade(tabindex="-1", role="dialog", aria-labelledby="MyModalLabel")
+  .modal-dialog(role="document")
+    .modal-content
+      .modal-header
+        button.close(data-dismiss="modal", aria-label="Close")
+          span(aria-hidden="true") &times;
+        h4#MyModalLabel.modal-title {{modaltitle}}
+      .modal-body
+        table.table.table-striped.table-bordered.table-condensed(table-layout="fixed" word-wrap="break-word")
+          thead
+            tr
+              th Attributes
+              th Value
+          tbody
+            tr(ng-repeat="a in attributes",ng-class-odd="'odd'" ,ng-class-even="'even'", ng-if="attributes")
+              td {{ a.key }}
+              td {{ a.value }}
+      .modal-footer
+          button.btn.btn-primary(data-dismiss="modal") Close
+#ExportModal.modal.fade(tabindex="-1", role="dialog", aria-labelledby="MyModalLabel")
+  .modal-dialog(role="document")
+    .modal-content
+      .modal-header
+        button.close(data-dismiss="modal", aria-label="Close")
+          span(aria-hidden="true") &times;
+        h4#ExportModalLabel.modal-title {{exportmodaltitle}}
+      .modal-body
+        .form-group
+          label(for="filename") Filename
+          input#filename.form-control(type="text", ng-model="filename")
+        .form-group
+          label(for="separator") Separator
+          input#separator.form-control(type="text", ng-model="separator")
+        .form-group
+          label(for="decimalSeparator") Decimal Separator
+          input#decimalSeparator.form-control(type="text", ng-model="decimalSeparator")
+      .modal-footer
+          button.btn.btn-default(data-dismiss="modal") Close
+          button.btn.btn-primary(ng-csv="getArray", csv-header="getHeader", filename="{{ filename }}", field-separator="{{ separator }}", decimal-separator="{{ decimalSeparator }}") Save as CSV

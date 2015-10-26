@@ -1,0 +1,57 @@
+.container
+  .row
+    nav.navbar.navbar-default(role='navigation')
+      .container-fluid
+        .navbar-inner
+          a.navbar-brand
+            img.navlogo(alt="bmc" src="images/bmc_dna.png")
+          ul.nav.navbar-nav
+            li
+              a(ng-click="goHome()",href='#/query') Home
+            li.dropdown
+              a.dropdown-toggle(data-toggle='dropdown')
+                | Actions 
+                b.caret
+              ul.dropdown-menu
+                li
+                  a(href='#') Get Relations
+                li
+                  a(href='#') Graph It!
+                li.divider
+                li
+                  a(href='#') Export
+                li.divider
+                li.disabled
+                  a(href='#') Launch Atrium Explorer
+          ul.nav.navbar-nav.pull-right
+            li.dropdown
+              a.dropdown-toggle(data-toggle='dropdown')
+                | User 
+                b.caret
+              ul.dropdown-menu.dropdown-menu-right
+                li
+                  a(href='#') Info
+                li
+                  a(href='#') Disconnect
+                li.divider
+                li
+                  a(href='#') Preferences
+                li.divider
+                li
+                  a(href='#') About
+.panel.panel-default
+  .panel-heading
+    h5 {{ heading }}
+  .panel-body
+    h3 {{title}}
+  table.table.table-striped.table-bordered.table-condensed(table-layout="fixed" word-wrap="break-word")
+    thead
+      tr
+        th Attributes
+        th Value
+    tbody
+      tr(ng-repeat="a in attributes",ng-class-odd="'odd'" ,ng-class-even="'even'", ng-if="attributes")
+        td {{ a.key }}
+        td {{ a.value }}
+  .panel-footer
+    h5 Footer - {{ footer }}

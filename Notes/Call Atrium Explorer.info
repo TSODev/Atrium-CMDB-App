@@ -1,0 +1,18 @@
+      //
+      //h2 Computer System List
+      //div
+      //   table
+      //      thead
+      //         tr: th Computer Systems
+      //   tbody
+      //      table
+      //         each c, i in comp
+      //            tr(class=(i % 2 == 0) ? 'odd' : 'even')
+      //               td #{c.Name}
+      //               td #{c.Description}
+      //               td
+      //                  a(class = 'button' , href='/api/details/#{c.InstanceId}') Details
+      //               td
+      //                  a(class = 'button' , href='/api/graph/#{c.InstanceId}') Graph !
+      //               td
+      //                  a(class = 'button' , href='http://#{server}/arsys/forms/onbmc-s/Atrium%3AExplorer?F490001100=#{namespace}&F400109900=#{classname}&F431400000=#{c.InstanceId}&F431400001=#{dataset}') Explore !

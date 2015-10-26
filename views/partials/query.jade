@@ -1,0 +1,45 @@
+.container
+  .container-fluid  
+    .row
+      nav.navbar.navbar-default(role='navigation')
+        .navbar-inner
+          a.navbar-brand
+            img.navlogo(alt="bmc" src="images/bmc_dna.png")
+          ul.nav.navbar-nav.pull-right
+            li.dropdown
+              a.dropdown-toggle(data-toggle='dropdown')
+                | User 
+                b.caret
+              ul.dropdown-menu.dropdown-menu-right
+                li
+                  a(href='#') Info
+                li
+                  a(href='#') Disconnect
+                li.divider
+                li
+                  a(href='#') Preferences
+                li.divider
+                li
+                  a(href='#') About
+.panel.panel-default
+  .panel-heading
+    h5 {{ heading }}
+  .panel-body
+    h3 {{title}}
+      form(role='form')
+      .row
+        .col-md-4
+          .form-group
+            .form-group
+              h4.help-block Define the request with a root class
+              label.control-label(for='formInput23') Root Class
+              select#formInput23.form-control(ng-model="class", ng-options="e.values['Class Name'] for e in entries", ng-change="update()" )
+                option ---- Choose a Class ----
+      .row
+        .col-md-8          
+          label.control-label Additional query
+          textarea.form-control(ng-model="addquery", rows='1', placeholder="not implemented yet")
+      h4.italic.help-block use expression like ('field' = "data") .
+      button.btn.btn-primary(ng-click="submitCI()", type='submit') Continue   
+  .panel-footer
+    h5 Footer - {{ footer }}
