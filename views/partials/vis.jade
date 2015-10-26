@@ -1,0 +1,43 @@
+.container
+  .container-fluid  
+    .row
+      nav.navbar.navbar-default(role='navigation')
+        .navbar-inner
+          a.navbar-brand
+            img.navlogo(alt="bmc" src="images/bmc_dna.png")
+          ul.nav.navbar-nav
+            li
+              a(ng-click="goHome()",href='#/query') Home
+            li.dropdown
+              a.dropdown-toggle(data-toggle='dropdown')
+                | Actions 
+                b.caret
+              ul.dropdown-menu
+                li
+                  a(ng-click="ModalExport()", data-toggle="modal", data-target="#ExportModal" ) Export
+                li
+                  a(ng-click="GraphIt()") Graph It!                  
+          ul.nav.navbar-nav.pull-right
+            li.dropdown
+              a.dropdown-toggle(data-toggle='dropdown')
+                | User 
+                b.caret
+              ul.dropdown-menu.dropdown-menu-right
+                li
+                  a(href='#') Info
+                li
+                  a(href='#') Disconnect
+                li.divider
+                li
+                  a(href='#') Preferences
+                li.divider
+                li
+                  a(href='#') About
+.panel.panel-default
+  .panel-heading
+    h5 {{ heading }}
+  .panel-body
+    form.form-filter
+      h3 {{title}}
+  .panel-footer
+    h5 Footer - {{ footermessage }}

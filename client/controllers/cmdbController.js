@@ -80,12 +80,12 @@ CMDBappControllers.controller('cmdbCtrl', function($scope, $http, $location, $ro
 
                 $scope.$watch(function () {
 
-                    // ToDo : secure the filtering process - Seems that checkbox is not correctely checked
-                    // ToDo : Get Results in Array , so they can be used in the Export function
+                    // ToDo : Implement supplemental filtering capability with checkboxes 
+                    // Export checked rows only
 
 
                      $scope.filteredItems = $scope.$eval("instances | filter:{attributes: {Name: thefilter}}");
-                     console.log("FL : " + $scope.filteredItems.length);
+//                     console.log("FL : " + $scope.filteredItems.length);
 
                 });                
                 $scope.footermessage = "";

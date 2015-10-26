@@ -39,7 +39,7 @@ var askforfield = function(req, index, InstanceId, fields, next){
     addurl = addurl.slice(0, -1);                                    // remove latest ','
     var url = "https://"+servername+":"+port+path+addurl;
 
-    console.log("asking : " + url);
+//    console.log("asking : " + url);
 
     superagent.get(url)
         .type('application/json')
@@ -64,7 +64,7 @@ var askforfield = function(req, index, InstanceId, fields, next){
 
 var getgraph = function(req, InstanceId, next){
 
-    console.log("I now arrive in graph call... , Id is " + InstanceId);
+//    console.log("I now arrive in graph call... , Id is " + InstanceId);
 
     var arjwt = req.session.jwt;
     var servername = req.session.servername;
@@ -75,7 +75,7 @@ var getgraph = function(req, InstanceId, next){
 
     var relations = new Array();
 
-    console.log("asking : " + url);
+//    console.log("asking : " + url);
 
     superagent.get(url)
         .type('application/json')
@@ -84,7 +84,7 @@ var getgraph = function(req, InstanceId, next){
         .end(function(e,response){
 //            console.log("response : " + response + " Error : " + e);
             if (e == null){
-                console.log("get from superagent : ");
+//                console.log("get from superagent : ");
                 status = response.status;
                 if (status == 200){
 
@@ -116,7 +116,6 @@ var getgraph = function(req, InstanceId, next){
 // GET home page.   /api with ClassName - return with Array of Objects
 //=====================================================
 router.get('/:ClassId', function(req, res, next) {
-    console.log("Get Landing on /api");
 
     var arjwt = req.session.jwt;
 
@@ -135,10 +134,10 @@ router.get('/:ClassId', function(req, res, next) {
         .type('application/json')
         .set('Authorization', 'AR-JWT ' + arjwt)
         .end(function(e,response){
-            console.log("response : " + response + " Error : " + e);
+//            console.log("response : " + response + " Error : " + e);
             if (e == null){
 //                console.log("get from superagent : " + JSON.stringify(response.text));
-                console.log("get from superagent : ");
+//                console.log("get from superagent : ");
                 status = response.status;
                 if (status == 200){
          // parsed response body as js object
@@ -204,7 +203,7 @@ router.get('/details/:Id', function (req, res, next) {
 
     var details = []
 
-    console.log("asking : " + url);
+//    console.log("asking : " + url);
 
     superagent.get(url)
         .type('application/json')
@@ -213,7 +212,7 @@ router.get('/details/:Id', function (req, res, next) {
 //            console.log("response : " + response + " Error : " + e);
             if (e == null){
 //                console.log("get from superagent : " + JSON.stringify(response.text));
-                console.log("get from superagent : ");
+//                console.log("get from superagent : ");
                 status = response.status;
                 if (status == 200){
          // parsed response body as js object
@@ -268,7 +267,7 @@ router.get('/details/:Id', function (req, res, next) {
 router.get('/graph/:Id', function (req, res, next) {
 
      var Id = req.params.Id;
-     console.log("I am in Graph ! with Id : " + Id);
+//     console.log("I am in Graph ! with Id : " + Id);
 
      var relations = getgraph(req, Id, function(status, data){
         if (status == 200) {
@@ -363,7 +362,7 @@ router.post('/login', function(req, res) {
 //            console.log("response : " + response + " Error : " + e);
             if (e == null){
 //                console.log("get from superagent : " + JSON.stringify(response));
-                console.log("get from superagent : ");
+//                console.log("get from superagent : ");
                 status = response.status;
                 if (status == 200){
 //                    console.log("Token : " + response.text);
@@ -405,7 +404,7 @@ router.post('/login', function(req, res) {
 //==================================================================================
 var getObject = function(req, ObjectId, next){
 
-    console.log("I now arrive in getObject call... , Id is " + ObjectId);
+//    console.log("I now arrive in getObject call... , Id is " + ObjectId);
 
     var arjwt = req.session.jwt;
     var servername = req.session.servername
@@ -414,16 +413,16 @@ var getObject = function(req, ObjectId, next){
     var path = "/api/arsys/v1/entry/OBJSTR:" + ObjectId;
 
     var url = "https://"+servername+":"+port+path;
-    console.log("asking : " + url);
+//    console.log("asking : " + url);
 
     superagent.get(url)
         .type('application/json')
         .timeout(10000)                                                // 10s timeout
         .set('Authorization', 'AR-JWT ' + arjwt)
         .end(function(e,response){
-            console.log("response : " + response + " Error : " + e);
+//            console.log("response : " + response + " Error : " + e);
             if (e == null){
-                console.log("get from superagent : ");
+//                console.log("get from superagent : ");
                 status = response.status;
                 if (status == 200){
                     var data = JSON.parse(response.text); 
@@ -441,7 +440,7 @@ var getObject = function(req, ObjectId, next){
 
 router.get('/utilities/Class', function (req, res, next) {
 
-    console.log("I am in Utilities ! looking for OBJSTR:Class");
+//    console.log("I am in Utilities ! looking for OBJSTR:Class");
 
     getObject(req, "Class?q='Class Type'="+'"Class"'+"AND'Abstract'="+'"No"', function(status, data){
             res.send(data.entries);

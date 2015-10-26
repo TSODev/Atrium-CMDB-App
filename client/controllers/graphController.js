@@ -29,6 +29,10 @@ CMDBappControllers.controller('graphCtrl', function($scope, $http, $location, $r
 
     }
 
+    $scope.GraphIt = function(){
+        console.log("Function GraphIt");
+        $location.path = ('/vis');
+    }
 
 //========================================================
 // following code is used when page is loading to fill the table
@@ -49,12 +53,8 @@ CMDBappControllers.controller('graphCtrl', function($scope, $http, $location, $r
 
                 $scope.$watch(function () {
 
-                    // ToDo : secure the filtering process - Seems that checkbox is not correctely checked
-                    // ToDo : Get Results in Array , so they can be used in the Export function
-
-
                      $scope.filteredItems = $scope.$eval("relations | filter:{attributes: thefilter}");
-                     console.log("FL : " + $scope.filteredItems.length);
+//                     console.log("FL : " + $scope.filteredItems.length);
 
                 });                
                 $scope.footermessage = "";
@@ -67,7 +67,9 @@ CMDBappControllers.controller('graphCtrl', function($scope, $http, $location, $r
 
     var getrelations = function(myarray){
 
-        //ToDo - Need to extract the injected object for Source and Destination
+        //ToDo - Need to include the injected object attributes for Source and Destination in CSV
+        //
+
 
             ciarray = myarray;
          return(ciarray);

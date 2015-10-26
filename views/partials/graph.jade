@@ -15,6 +15,8 @@
               ul.dropdown-menu
                 li
                   a(ng-click="ModalExport()", data-toggle="modal", data-target="#ExportModal" ) Export
+                li
+                  a(ng-click="GraphIt()", type="submit") Graph It!                  
           ul.nav.navbar-nav.pull-right
             li.dropdown
               a.dropdown-toggle(data-toggle='dropdown')
@@ -75,10 +77,10 @@
       .modal-body
         .form-group
           label(for="filename") Filename
-          input#filename.form-control(type="text", ng-model="filename")
+          input#filename.form-control(type="text", ng-model="filename", placeholder="Filename with path and extension")
         .form-group
           label(for="separator") Separator
-          input#separator.form-control(type="text", ng-model="separator")
+          input#separator.form-control(type="text", ng-model="separator", placeholder="Row delimiter for CSV")
         .form-group
           label(for="decimalSeparator") Decimal Separator
           input#decimalSeparator.form-control(type="text", ng-model="decimalSeparator")
