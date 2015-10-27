@@ -15,16 +15,16 @@ CMDBappControllers.controller('cmdbCtrl', function($scope, $http, $location, $ro
     };
 
     $scope.Graph = function(instanceId){
-        $location.path('/graph/' + instanceId);
+        $location.path('graph/' + instanceId);
     };
 
     $scope.goHome = function(){
-        $location.path('/query');
+        $location.path('query');
     };
 
     $scope.ModalDetails = function(instanceId){
      console.log("Looking for details for : " + instanceId);
-     $http.get("api/details/" + instanceId)
+     var req = $http.get("api/details/" + instanceId)
          .success(function(response){
             console.log("Back from Server with success ! > " + response.status);
              if (response.status != 200){

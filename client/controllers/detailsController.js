@@ -16,7 +16,7 @@ CMDBappControllers.controller('cidetailsCtrl', function($scope, $http, $location
     console.log("Details Controller");
      var config = {};
 
-     $http.get("api/details/" + instanceId, config)
+     var req = $http.get("api/details/" + instanceId, config)
          .success(function(response){
             console.log("Back from Server with success ! > " + response.status);
              if (response.status != 200){

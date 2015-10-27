@@ -23,7 +23,7 @@ CMDBappControllers.controller('queryCtrl', function($scope, $http, $location, $r
     console.log("Query Controller");
 
 
-     $http.get("api/utilities/Class")
+     var req = $http.get("api/utilities/Class")
         .then( function successCallbak(response){
             console.log("Back from Server with success ! > " + response.status);
              // Todo : Create Alert windows if status is not 200

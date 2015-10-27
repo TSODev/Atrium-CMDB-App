@@ -3,7 +3,6 @@
  */
 var CMDBapp = angular.module('CMDBapp', ['ngRoute', 'CMDBappControllers', 'angular-loading-bar', 'ngSanitize', 'ngCsv']);
 
-
 CMDBapp.config(['$routeProvider',
     function($routeProvider, $locationProvider) {
         console.log("Working on routes...");

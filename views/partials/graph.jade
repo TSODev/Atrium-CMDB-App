@@ -1,3 +1,5 @@
+link(rel='stylesheet', href='bower_components/vis/dist/vis.css')
+script(src='bower_components/vis/dist/vis.js')
 .container
   .container-fluid  
     .row
@@ -16,7 +18,7 @@
                 li
                   a(ng-click="ModalExport()", data-toggle="modal", data-target="#ExportModal" ) Export
                 li
-                  a(ng-click="GraphIt()", type="submit") Graph It!                  
+                  a(ng-click="GraphIt()", data-toggle="modal", data-target="#ExplorerModal") Graph It!                  
           ul.nav.navbar-nav.pull-right
             li.dropdown
               a.dropdown-toggle(data-toggle='dropdown')
@@ -87,3 +89,15 @@
       .modal-footer
           button.btn.btn-default(data-dismiss="modal") Close
           button.btn.btn-primary(ng-csv="getArray", csv-header="getHeader", filename="{{ filename }}", field-separator="{{ separator }}", decimal-separator="{{ decimalSeparator }}") Save as CSV
+#ExplorerModal.modal.fade(tabindex="-1", role="dialog", aria-labelledby="MyModalLabel")
+  .modal-dialog.modal-lg
+    .modal-content
+      .modal-header
+        button.close(data-dismiss="modal", aria-label="Close")
+          span(aria-hidden="true") &times;
+        h4#ExportModalLabel.modal-title {{exportmodaltitle}}
+      .modal-body
+        #configurator
+        #mynetwork
+      .modal-footer
+          button.btn.btn-default(data-dismiss="modal") Close

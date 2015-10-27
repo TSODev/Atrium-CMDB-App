@@ -15,7 +15,7 @@ CMDBappControllers.controller('loginProcess', function($scope,$http, $location, 
                         password: $scope.password
                     };
                     
-        $http.post("api/login",data, config)
+        var req = $http.post("api/login",data, config)
             .success(function(response){
                 console.log("Back from Server with success ! > " + response.status + ": " + response.data);
                 // Todo : Create Alert windows if status is not 200
