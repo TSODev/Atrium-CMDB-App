@@ -16,9 +16,7 @@ script(src='bower_components/vis/dist/vis.js')
                 b.caret
               ul.dropdown-menu
                 li
-                  a(ng-click="ModalExport()", data-toggle="modal", data-target="#ExportModal" ) Export
-                li
-                  a(ng-click="GraphIt()", data-toggle="modal", data-target="#ExplorerModal") Graph It!                  
+                  a(ng-click="ModalExport()", data-toggle="modal", data-target="#ExportModal" ) Export                
           ul.nav.navbar-nav.pull-right
             li.dropdown
               a.dropdown-toggle(data-toggle='dropdown')
@@ -39,34 +37,60 @@ script(src='bower_components/vis/dist/vis.js')
   .panel-heading
     h5 {{ heading }}
   .panel-body
-    form.form-filter
-      h3 {{title}}
-      .row
-        .col-md-8
+    .panel-1
+      .col-md-10
+        #mynetwork
+      .col-md-2
+        #actionbar
+          h4 Action Bar
           .input-group
             span.input-group-addon Filter
-            input.form-control(type='search', placeholder='type to filter - (filtering by ALL including hidden relationship attributes)', ng-model="thefilter")
-        .col-md-4
-        .input-group
+            input.form-control(type='search', placeholder='type to filter', ng-model="thefilter")
+          span
+            .button.btn.btn-default(type="button") Toogle Full Screen
+          span
+            .button.btn.btn-default(type="button") Fit Whole Graph          
+          span
+            .button.btn.btn-default(type="button") Zoom In 
+          span
+            .button.btn.btn-default(type="button") Zoom Out             
+          span
+            .button.btn.btn-default(type="button") Move Left 
+          span
+            .button.btn.btn-default(type="button") Move Up
+          span
+            .button.btn.btn-default(type="button") Move Down
+          span
+            .button.btn.btn-default(type="button") Move Right 
+    .panel-2.hidden
+      form.form-filter
+        h3 {{title}}
+        .row
+          .col-md-8
+            .input-group
+              span.input-group-addon Filter
+              input.form-control(type='search', placeholder='type to filter - (filtering by ALL including hidden relationship attributes)', ng-model="thefilter")
+          .col-md-4
           .input-group
-            span.input-group-addon
-              input(type='checkbox', ng-model='impactonly')
-            input.form-control(type='text', value='Impact Only', placeholder='Impact Only')
-  table.table.table-bordered
-    thead
-      tr
-        th Relation
-        th From
-        th Class (Source)
-        th To
-        th Class (Destination)
-    tbody
-      tr(ng-repeat="r in filteredItems" , ng-class="{'impact10': r.HasImpact == 10}", ng-if="relations")
-        td {{ r.ClassId }}
-        td {{ r.SourceInfo.Name }}
-        td {{ r.SourceInfo.ClassId}}
-        td {{ r.DestinationInfo.Name }}
-        td {{ r.DestinationInfo.ClassId}}
+            .input-group
+              span.input-group-addon
+                input(type='checkbox', ng-model='impactonly')
+              input.form-control(type='text', value='Impact Only', placeholder='Impact Only')
+    table.table.table-bordered.hidden
+      thead
+        tr
+          th Relation
+          th From
+          th Class (Source)
+          th To
+          th Class (Destination)
+      tbody
+        tr(ng-repeat="r in filteredItems" , ng-class="{'impact10': r.HasImpact == 10}", ng-if="relations")
+          td {{ r.ClassId }}
+          td {{ r.SourceInfo.Name }}
+          td {{ r.SourceInfo.ClassId}}
+          td {{ r.DestinationInfo.Name }}
+          td {{ r.DestinationInfo.ClassId}}
   .panel-footer
     h5 Footer - {{ footermessage }}
 #ExportModal.modal.fade(tabindex="-1", role="dialog", aria-labelledby="MyModalLabel")
@@ -90,7 +114,7 @@ script(src='bower_components/vis/dist/vis.js')
           button.btn.btn-default(data-dismiss="modal") Close
           button.btn.btn-primary(ng-csv="getArray", csv-header="getHeader", filename="{{ filename }}", field-separator="{{ separator }}", decimal-separator="{{ decimalSeparator }}") Save as CSV
 #ExplorerModal.modal.fade(tabindex="-1", role="dialog", aria-labelledby="MyModalLabel")
-  .modal-dialog.modal-lg
+  .modal-dialog.modal-lg.modal-graph
     .modal-content
       .modal-header
         button.close(data-dismiss="modal", aria-label="Close")
@@ -98,6 +122,6 @@ script(src='bower_components/vis/dist/vis.js')
         h4#ExportModalLabel.modal-title {{exportmodaltitle}}
       .modal-body
         #configurator
-        #mynetwork
+        #myoldnetwork
       .modal-footer
           button.btn.btn-default(data-dismiss="modal") Close

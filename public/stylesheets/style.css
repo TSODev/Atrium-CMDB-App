@@ -4,6 +4,15 @@
     padding: 15px;
     margin: 0 auto;
 }
+.modal-graph
+{
+    /*+placement: -110px -22px;*/
+    position: relative;
+    left: -110px;
+    top: -22px;
+    height: ;
+    width: 1024px;
+}
 th
 {
     background-color: #414042;
@@ -127,7 +136,7 @@ a
 }
 #mynetwork
 {
-    width: 800px;
+    width: 980px;
     height: 800px;
     border: 1px solid lightgray;
 }

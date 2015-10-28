@@ -109,15 +109,21 @@ var produceVis = function(relationsList){
         nodes.push({
             id: uniqCI[i].text,
             label: uniqCI[i].name,
-            group: uniqCI[i].classname                  // Group By Class Name
+            group: uniqCI[i].classname,                  // Group By Class Name
+            title: uniqCI[i].classname
         });
         console.log("Node - " + i + " : " + JSON.stringify(nodes[i]));
     };
 
     for (var i = 0; i < relationsList.length; i++) {
+//      var  = 'GRAY';
+//      if (relationsList[i].HasImpact == 10) { color = 'red'};
         edges.push({
             from: relationsList[i]['Source.InstanceId'],
-            to: relationsList[i]['Destination.InstanceId']
+            to: relationsList[i]['Destination.InstanceId'],
+//            color: color,
+            dashes : (relationsList[i].HasImpact === 5),
+            title: relationsList[i].ClassId
         })
     }i
 
@@ -158,11 +164,11 @@ var options = {
 
   edges:{
     arrows: {
-      to:     {enabled: false, scaleFactor:1},
+      to:     {enabled: true, scaleFactor:1},
       middle: {enabled: false, scaleFactor:1},
       from:   {enabled: false, scaleFactor:1}
     },
-    color: '#222222',
+    color: '#444444',
     font: '12px arial #ff0000',
     scaling:{
       label: true,
@@ -174,12 +180,20 @@ var options = {
 // ---- NODES ----
 
    nodes:{
-    color: '#EEEEEE',
+    shape: 'dot',
+    color: {
+      background: '#EEEEEE',
+      border: 'black',
+      highlight: 'white'
+    },
     fixed: false,
     font: '12px arial black',
     scaling: {
+      min: 16,
+      max:32,
       label: true
     },
+    borderWidth: 2,
     shadow: true
   },
 
@@ -187,10 +201,61 @@ var options = {
 
   groups:{
     useDefaultGroups: false,
-    BMC_ComputerSystem:{
-        color:{background: 'blue'},
+    5: {
+
+    },
+    10: {
+
+    },
+    BMC_COMPUTERSYSTEM: {
+        shape: 'image',
+        image: '/images/graph_images/BMC_COMPUTERSYSTEM.png',
+        size: 30,
+        color: {
+          background: '#CCDDEE',
+          border: "#000000"
+        },
         borderWidth:3
-    }   
+    },
+    BMC_PROCESSOR: {
+        color: '#0AA00A',
+        size: 10
+    },
+    BMC_PRODUCT: {
+        size: 16,
+        color: '#00CC00'
+
+    },
+    BMC_OPERATINGSYSTEM: {
+        color: '#0000CC'
+    },
+    BMC_SOFTWARESERVER: {
+        color: '#CC0000'
+    },
+    BMC_IPENDPOINT: {
+        color: '#EE1111',      
+        size: 10
+    },
+    BMC_NETWORKPORT: {
+        color: '#EE1111', 
+        size: 10
+    },
+    BMC_LANENDPOINT: {
+        color: '#EE1111', 
+        size: 10
+    },
+    BMC_APPLICATION: {
+        color: '#CCCC00'
+    },
+    BMC_IPCONNECTIVITYSUBNET: {
+        size: 10
+    },
+    'BMC.CORE:BMC_CONCRETECOLLECTION': {
+        size: 10
+    },
+    BMC_APPLICATIONSERVICE: {
+        color: '#00CCCC'
+    }
   },
 
 // ---- LAYOUT ----
@@ -274,11 +339,45 @@ var options = {
   }
 };
 
+  
   var network = new vis.Network(container, data, options);
 
+  network.moveTo({
+    position: {
+      x: 490,
+      y: 400
+    }
+  });
+
+  network.fit({
+    nodes: nodes
+  });
+  
+//  console.log("Network Data : " + JSON.stringify(data));
+  console.log("Network Position :" + JSON.stringify(network.getViewPosition()));
+
+//=======================================================================
+// Network Event Manager
+//=======================================================================
+
+network.on( 'click', function(properties) {
+    alert('clicked node ' + properties.nodes);
+});
+
+network.on( 'dragEnd', function(properties) {
+    alert('Drag End ' + JSON.stringify(network.getViewPosition()));
+});
 
 
 };
+
+
+
+
+
+
+
+
 
     var getrelations = function(myarray){
 
