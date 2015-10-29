@@ -45,16 +45,18 @@ CMDBappControllers.controller('graphCtrl', function($scope, $http, $location, $r
              if (response.status != 200){
                 $scope.message = response.status;
              } else {
-                $scope.heading = "Success";
-
+                $scope.heading = "Generate Graph";
                 $scope.relations = response.data; 
-
                 $scope.$watch(function () {
-
                      $scope.filteredItems = $scope.$eval("relations | filter:{attributes: thefilter}");
-//                     console.log("FL : " + $scope.filteredItems.length);
-                });                
-                produceVis($scope.relations);
+                });  
+
+                produceVis($scope.relations, function(network){
+
+        // ToDo : Create Event Handler to manage end of graphing and update the Header...
+
+                  $scope.heading = "Success";
+                });
 
                 $scope.footermessage = "";
 
@@ -65,11 +67,12 @@ CMDBappControllers.controller('graphCtrl', function($scope, $http, $location, $r
         });
 });
 
-var produceVis = function(relationsList){
 
 /*=====================================
-* use to produce vis
+* Produce de Visualtion Network
 =====================================*/
+
+var produceVis = function(relationsList, next){
 
     var CIObjects = new Array();
 
@@ -96,11 +99,6 @@ var produceVis = function(relationsList){
         return true;
     });
 
-
-    // for (var i = 0; i < uniqCI.length; i++) {
-    //     console.log("Unique = " + i + " : " + JSON.stringify(uniqCI[i]));
-    // };
-
     var nodes = [];
     var edges = [];
 
@@ -110,18 +108,15 @@ var produceVis = function(relationsList){
             id: uniqCI[i].text,
             label: uniqCI[i].name,
             group: uniqCI[i].classname,                  // Group By Class Name
-            title: uniqCI[i].classname
+            title: uniqCI[i].classname + " : " + uniqCI[i].name
         });
-        console.log("Node - " + i + " : " + JSON.stringify(nodes[i]));
+//        console.log("Node - " + i + " : " + JSON.stringify(nodes[i]));
     };
 
     for (var i = 0; i < relationsList.length; i++) {
-//      var  = 'GRAY';
-//      if (relationsList[i].HasImpact == 10) { color = 'red'};
         edges.push({
             from: relationsList[i]['Source.InstanceId'],
             to: relationsList[i]['Destination.InstanceId'],
-//            color: color,
             dashes : (relationsList[i].HasImpact === 5),
             title: relationsList[i].ClassId
         })
@@ -218,6 +213,7 @@ var options = {
         borderWidth:3
     },
     BMC_PROCESSOR: {
+        shape: 'square',
         color: '#0AA00A',
         size: 10
     },
@@ -233,15 +229,18 @@ var options = {
         color: '#CC0000'
     },
     BMC_IPENDPOINT: {
-        color: '#D4A9FF',      
+        color: '#D4A9FF',  
+        shape: 'square',    
         size: 10
     },
     BMC_NETWORKPORT: {
-        color: '#997A5C', 
+        color: '#997A5C',
+        shape: 'square', 
         size: 10
     },
     BMC_LANENDPOINT: {
-        color: '#FF6666', 
+        color: '#FF6666',
+        shape: 'square', 
         size: 10
     },
     BMC_APPLICATION: {
@@ -249,6 +248,7 @@ var options = {
     },
     BMC_IPCONNECTIVITYSUBNET: {
         size: 10,
+        shape: 'square',
         color: '#CCCCFF'
     },
     'BMC.CORE:BMC_CONCRETECOLLECTION': {
@@ -256,7 +256,8 @@ var options = {
         size: 10
     },
     BMC_APPLICATIONSERVICE: {
-        color: '#00CCCC'
+        color: '#00CCCC',
+        size: 15
     }
   },
 
@@ -343,32 +344,25 @@ var options = {
 
   
   var network = new vis.Network(container, data, options);
-
-  network.moveTo({
-    position: {
-      x: 490,
-      y: 400
-    }
-  });
-
-  network.fit({
-    nodes: nodes
-  });
   
-//  console.log("Network Data : " + JSON.stringify(data));
   console.log("Network Position :" + JSON.stringify(network.getViewPosition()));
 
 //=======================================================================
 // Network Event Manager
 //=======================================================================
 
-network.on( 'click', function(properties) {
-    alert('clicked node ' + properties.nodes);
-});
+// network.on('afterDrawing', function(properties) {
+// //    next(network);
+// });
 
-network.on( 'dragEnd', function(properties) {
-    alert('Drag End ' + JSON.stringify(network.getViewPosition()));
-});
+
+// network.on( 'click', function(properties) {
+//     alert('clicked node ' + properties.nodes);
+// });
+
+// network.on( 'dragEnd', function(properties) {
+//     alert('Drag End ' + JSON.stringify(network.getViewPosition()));
+// });
 
 
 };

@@ -46,21 +46,31 @@ script(src='bower_components/vis/dist/vis.js')
           .input-group
             span.input-group-addon Filter
             input.form-control(type='search', placeholder='type to filter', ng-model="thefilter")
-          .button.btn.btn-default(type="button", aria-label='Toogle Full Screen')
-            span.glyphicon.glyphicon-full-screen(aria-hidden = true)
-          .button.btn.btn-default(type="button") Fit Whole Graph          
           span
-            .button.btn.btn-default(type="button") Zoom In 
+          .button-group(role="group")
+            .button.btn.btn-default(type="button", aria-label='Toogle Full Screen')
+              span.glyphicon.glyphicon-fullscreen(aria-hidden = true)
+            .button.btn.btn-default(type="button", aria-label='Fit Screen')
+              span.glyphicon.glyphicon-screenshot(aria-hidden = true)
           span
-            .button.btn.btn-default(type="button") Zoom Out             
-          span
-            .button.btn.btn-default(type="button") Move Left 
-          span
-            .button.btn.btn-default(type="button") Move Up
-          span
-            .button.btn.btn-default(type="button") Move Down
-          span
-            .button.btn.btn-default(type="button") Move Right 
+          .button-group(role="group")
+            .button.btn.btn-default(type="button", aria-label='Zoom In')
+              span.glyphicon.glyphicon-zoom-in(aria-hidden = true)
+            .button.btn.btn-default(type="button", aria-label='Zoom Out')
+              span.glyphicon.glyphicon-zoom-out(aria-hidden = true)
+          aspn
+          .button-group(role="group")
+            .button.btn.btn-default(type="button", aria-label='Move Up')
+              span.glyphicon.glyphicon-arrow-up(aria-hidden = true)
+            .button.btn.btn-default(type="button", aria-label='Move Left')
+              span.glyphicon.glyphicon-arrow-left(aria-hidden = true)
+            .button.btn.btn-default(type="button", aria-label='Move Right')
+              span.glyphicon.glyphicon-arrow-right(aria-hidden = true)
+            .button.btn.btn-default(type="button", aria-label='Move Down')
+              span.glyphicon.glyphicon-arrow-down(aria-hidden = true)
+        span
+        #configurator
+          h4 Configure Graph
     .panel-2.hidden
       form.form-filter
         h3 {{title}}
