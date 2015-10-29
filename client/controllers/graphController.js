@@ -233,24 +233,26 @@ var options = {
         color: '#CC0000'
     },
     BMC_IPENDPOINT: {
-        color: '#EE1111',      
+        color: '#D4A9FF',      
         size: 10
     },
     BMC_NETWORKPORT: {
-        color: '#EE1111', 
+        color: '#997A5C', 
         size: 10
     },
     BMC_LANENDPOINT: {
-        color: '#EE1111', 
+        color: '#FF6666', 
         size: 10
     },
     BMC_APPLICATION: {
         color: '#CCCC00'
     },
     BMC_IPCONNECTIVITYSUBNET: {
-        size: 10
+        size: 10,
+        color: '#CCCCFF'
     },
     'BMC.CORE:BMC_CONCRETECOLLECTION': {
+        color: '#FF9900',
         size: 10
     },
     BMC_APPLICATIONSERVICE: {

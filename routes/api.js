@@ -72,7 +72,7 @@ var getgraph = function(req, InstanceId, next){
 
     var path = "/api/cmdb/v1/instance/BMC.ASSET/BMC.CORE/BMC_BaseElement/";
 //    var url = "https://"+servername+":"+port+path + InstanceId + "/graph?rel=(BMC_BaseRelationship,BMC.CORE,2)&cl=(BMC_BaseElement,BMC.CORE)&mode=2&level=10";
-    var url = "https://"+servername+":"+port+path + InstanceId + "/graph?rel=(BMC_BaseRelationship,BMC.CORE,2)&cl=(BMC_BaseElement,BMC.CORE)&mode=2&level=3";
+    var url = "https://"+servername+":"+port+path + InstanceId + "/graph?rel=(BMC_BaseRelationship,BMC.CORE,2)&cl=(BMC_BaseElement,BMC.CORE)&mode=2&level=5";
 
     var relations = new Array();
 

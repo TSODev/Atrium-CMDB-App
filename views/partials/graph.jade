@@ -46,10 +46,9 @@ script(src='bower_components/vis/dist/vis.js')
           .input-group
             span.input-group-addon Filter
             input.form-control(type='search', placeholder='type to filter', ng-model="thefilter")
-          span
-            .button.btn.btn-default(type="button") Toogle Full Screen
-          span
-            .button.btn.btn-default(type="button") Fit Whole Graph          
+          .button.btn.btn-default(type="button", aria-label='Toogle Full Screen')
+            span.glyphicon.glyphicon-full-screen(aria-hidden = true)
+          .button.btn.btn-default(type="button") Fit Whole Graph          
           span
             .button.btn.btn-default(type="button") Zoom In 
           span
