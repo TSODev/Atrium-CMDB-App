@@ -164,10 +164,6 @@ var options = {
       from:   {enabled: false, scaleFactor:1}
     },
     color: '#444444',
-    font: '12px arial #ff0000',
-    scaling:{
-      label: true,
-    },
     shadow: true,
     smooth: true,
   },
@@ -180,13 +176,6 @@ var options = {
       background: '#EEEEEE',
       border: 'black',
       highlight: 'white'
-    },
-    fixed: false,
-    font: '12px arial black',
-    scaling: {
-      min: 16,
-      max:32,
-      label: true
     },
     borderWidth: 2,
     shadow: true
