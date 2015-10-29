@@ -32,6 +32,30 @@ CMDBappControllers.controller('graphCtrl', function($scope, $http, $location, $r
 
     }
 
+    var cur_width = 0;
+    var cur_height = 0;
+    var fullscreen = false;
+
+    $scope.togglefullscreen = function() {
+//      alert("Toggle : " + fullscreen + " - " + cur_width + "|" + cur_height);
+      $('#header').toggle();
+      $('#footer').toggle();
+      if (!fullscreen){
+        fullscreen = true;
+        cur_width = $('#mynetwork').width();
+        cur_height = $('#mynetwork').height();
+        $('#mynetwork').width($(window).width()-50).height($(window).height()-40);        
+      } else {
+        fullscreen = false;       
+        $("#mynetwork").width(cur_width).height(cur_height);
+      }
+
+    };
+
+    $scope.fit = function(){
+//      $("#mynetwork").fit();
+    };
+
 //========================================================
 // following code is used when page is loading to fill the table
 //---------------------------------------------------------
@@ -51,11 +75,15 @@ CMDBappControllers.controller('graphCtrl', function($scope, $http, $location, $r
                      $scope.filteredItems = $scope.$eval("relations | filter:{attributes: thefilter}");
                 });  
 
+                var graphloaded = false;
                 produceVis($scope.relations, function(network){
 
         // ToDo : Create Event Handler to manage end of graphing and update the Header...
+                  if (!graphloaded){
+                    graphloaded = true;
+                    $scope.heading = "Success";
+                  };
 
-                  $scope.heading = "Success";
                 });
 
                 $scope.footermessage = "";
@@ -130,211 +158,11 @@ var produceVis = function(relationsList, next){
     nodes: nodes,
     edges: edges,
   };
-  // var options = {
-  //   width: '1000px',
-  //   height: '1000px'
-  // };
 
-//===========================================================================================
-// Network Options
-//----------------------
-var options = {
-  autoResize: true,
-  height: '100%',
-  width: '100%',
-  locale: 'en',
-//  locales: locales,
-  clickToUse: false,
-
-// ---- CONFIGURE ----
-
-  configure: {
-    enabled: false,
-    filter: 'nodes,edges',
-    container: configurator,
-    showButton: true
-  },
-
-// ---- EDGES ----
-
-  edges:{
-    arrows: {
-      to:     {enabled: true, scaleFactor:1},
-      middle: {enabled: false, scaleFactor:1},
-      from:   {enabled: false, scaleFactor:1}
-    },
-    color: '#444444',
-    shadow: true,
-    smooth: true,
-  },
-
-// ---- NODES ----
-
-   nodes:{
-    shape: 'dot',
-    color: {
-      background: '#EEEEEE',
-      border: 'black',
-      highlight: 'white'
-    },
-    borderWidth: 2,
-    shadow: true
-  },
-
-// ---- GROUPS ----
-
-  groups:{
-    useDefaultGroups: false,
-    5: {
-
-    },
-    10: {
-
-    },
-    BMC_COMPUTERSYSTEM: {
-        shape: 'image',
-        image: '/images/graph_images/BMC_COMPUTERSYSTEM.png',
-        size: 30,
-        color: {
-          background: '#CCDDEE',
-          border: "#000000"
-        },
-        borderWidth:3
-    },
-    BMC_PROCESSOR: {
-        shape: 'square',
-        color: '#0AA00A',
-        size: 10
-    },
-    BMC_PRODUCT: {
-        size: 16,
-        color: '#00CC00'
-
-    },
-    BMC_OPERATINGSYSTEM: {
-        color: '#0000CC'
-    },
-    BMC_SOFTWARESERVER: {
-        color: '#CC0000'
-    },
-    BMC_IPENDPOINT: {
-        color: '#D4A9FF',  
-        shape: 'square',    
-        size: 10
-    },
-    BMC_NETWORKPORT: {
-        color: '#997A5C',
-        shape: 'square', 
-        size: 10
-    },
-    BMC_LANENDPOINT: {
-        color: '#FF6666',
-        shape: 'square', 
-        size: 10
-    },
-    BMC_APPLICATION: {
-        color: '#CCCC00'
-    },
-    BMC_IPCONNECTIVITYSUBNET: {
-        size: 10,
-        shape: 'square',
-        color: '#CCCCFF'
-    },
-    'BMC.CORE:BMC_CONCRETECOLLECTION': {
-        color: '#FF9900',
-        size: 10
-    },
-    BMC_APPLICATIONSERVICE: {
-        color: '#00CCCC',
-        size: 15
-    }
-  },
-
-// ---- LAYOUT ----
-
-  layout:{
-    hierarchical: false
-  },
-
-// ---- INTERACTION ----
-
-  interaction:{
-    dragNodes:true,
-    dragView: true,
-    hideEdgesOnDrag: false,
-    hideNodesOnDrag: false,
-    hover: false,
-    hoverConnectedEdges: true,
-    keyboard: {
-      enabled: false,
-      speed: {x: 10, y: 10, zoom: 0.02},
-      bindToWindow: true
-    },
-    multiselect: false,
-    navigationButtons: false,
-    selectable: true,
-    selectConnectedEdges: true,
-    tooltipDelay: 300,
-    zoomView: true
-  },
-
-// ---- MANIPULATION ----
-
-  manipulation: false,
-
-// ---- PHYSICS ----
-
-  physics:{
-    enabled: true,
-    barnesHut: {
-      gravitationalConstant: -2000,
-      centralGravity: 0.3,
-      springLength: 95,
-      springConstant: 0.04,
-      damping: 0.09,
-      avoidOverlap: 0
-    },
-    forceAtlas2Based: {
-      gravitationalConstant: -50,
-      centralGravity: 0.01,
-      springConstant: 0.08,
-      springLength: 100,
-      damping: 0.4,
-      avoidOverlap: 0
-    },
-    repulsion: {
-      centralGravity: 0.2,
-      springLength: 200,
-      springConstant: 0.05,
-      nodeDistance: 100,
-      damping: 0.09
-    },
-    hierarchicalRepulsion: {
-      centralGravity: 0.0,
-      springLength: 100,
-      springConstant: 0.01,
-      nodeDistance: 120,
-      damping: 0.09
-    },
-    maxVelocity: 50,
-    minVelocity: 0.1,
-    solver: 'barnesHut',
-    stabilization: {
-      enabled: true,
-      iterations: 1000,
-      updateInterval: 100,
-      onlyDynamicEdges: false,
-      fit: true
-    },
-    timestep: 0.5,
-    adaptiveTimestep: true
-  }
-};
 
   
-  var network = new vis.Network(container, data, options);
-  
-  console.log("Network Position :" + JSON.stringify(network.getViewPosition()));
+  var network = new vis.Network(container, data, options);  
+  next(network);
 
 //=======================================================================
 // Network Event Manager
