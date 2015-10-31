@@ -53,8 +53,23 @@ CMDBappControllers.controller('graphCtrl', function($scope, $http, $location, $r
     };
 
     $scope.fit = function(){
-//      $("#mynetwork").fit();
+      network.fit();
     };
+
+
+    $scope.nodesClassList = nodesClassList;
+    $scope.edgesClassList = edgesClassList;
+
+    $scope.togglenodesclass = function(){
+        dv_nodes.refresh();
+        network.fit();
+    };
+
+    $scope.toggleedgesclass = function(){
+        dv_edges.refresh();
+        network.fit();
+    };
+
 
 //========================================================
 // following code is used when page is loading to fill the table
@@ -76,15 +91,11 @@ CMDBappControllers.controller('graphCtrl', function($scope, $http, $location, $r
                 });  
 
                 var graphloaded = false;
-                produceVis($scope.relations, function(network){
+                network = produceVis($scope.relations);
 
         // ToDo : Create Event Handler to manage end of graphing and update the Header...
-                  if (!graphloaded){
-                    graphloaded = true;
-                    $scope.heading = "Success";
-                  };
 
-                });
+                network.fit();
 
                 $scope.footermessage = "";
 
@@ -100,69 +111,81 @@ CMDBappControllers.controller('graphCtrl', function($scope, $http, $location, $r
 * Produce de Visualtion Network
 =====================================*/
 
-var produceVis = function(relationsList, next){
+var produceVis = function(relationsList,next){
 
     var CIObjects = new Array();
 
+// put ALL CIs involved in the relation List... (duplicate CI in the Array)
+
     for (var i = 0; i < relationsList.length; i++) {
-        CIObjects.push({
-            text: relationsList[i]['Source.InstanceId'],
-            name: relationsList[i].SourceInfo.Name,
-            classname: relationsList[i].SourceInfo.ClassId
-        });
-        CIObjects.push({
-            text: relationsList[i]['Destination.InstanceId'],
-            name: relationsList[i].DestinationInfo.Name,
-            classname: relationsList[i].DestinationInfo.ClassId
-        })
+        if (!findInstanceId(CIObjects, relationsList[i]['Source.InstanceId'])){
+            CIObjects.push({
+                text: relationsList[i]['Source.InstanceId'],
+                name: relationsList[i].SourceInfo.Name,
+                classname: relationsList[i].SourceInfo.ClassId
+            });
+            if (!findClassName(nodesClassList,relationsList[i].SourceInfo.ClassId)){
+                nodesClassList.push({
+                    name: relationsList[i].SourceInfo.ClassId,
+                    selected: true
+                });                  
+            };          
+        };
+        if (!findInstanceId(CIObjects, relationsList[i]['Destination.InstanceId'])){
+            CIObjects.push({
+                text: relationsList[i]['Destination.InstanceId'],
+                name: relationsList[i].DestinationInfo.Name,
+                classname: relationsList[i].DestinationInfo.ClassId
+            });
+            if (!findClassName(nodesClassList,relationsList[i].DestinationInfo.ClassId)){
+                nodesClassList.push({
+                    name: relationsList[i].DestinationInfo.ClassId,
+                    selected: true
+                });                  
+            }; 
+        };
     };
 
-    var uniqCI = _.filter(CIObjects, function (element, index) {
-        // tests if the element has a duplicate in the rest of the array
-        for(index += 1; index < CIObjects.length; index += 1) {
-            if (_.isEqual(element, CIObjects[index])) {
-                return false;
-            }
-    }
-        return true;
-    });
-
-    var nodes = [];
-    var edges = [];
-
+     var uniqCI = CIObjects;
 
     for (var i = 0; i < uniqCI.length; i++) {
-        nodes.push({
-            id: uniqCI[i].text,
-            label: uniqCI[i].name,
-            group: uniqCI[i].classname,                  // Group By Class Name
-            title: uniqCI[i].classname + " : " + uniqCI[i].name
-        });
-//        console.log("Node - " + i + " : " + JSON.stringify(nodes[i]));
+            ds_nodes.add({
+                id: uniqCI[i].text,
+                label: uniqCI[i].name,
+                group: uniqCI[i].classname,                                 // Group By Class Name
+                title: uniqCI[i].classname + " : " + uniqCI[i].name
+            });
     };
 
+
     for (var i = 0; i < relationsList.length; i++) {
-        edges.push({
+        if (!findClassName(edgesClassList, relationsList[i].ClassId)){
+            edgesClassList.push({
+                name: relationsList[i].ClassId,
+                selected: true
+            });
+        };
+        ds_edges.add({
             from: relationsList[i]['Source.InstanceId'],
             to: relationsList[i]['Destination.InstanceId'],
             dashes : (relationsList[i].HasImpact === 5),
             title: relationsList[i].ClassId
         })
-    }i
-
+    };
 
   // create a network
   var container = document.getElementById('mynetwork');
   var configurator = document.getElementById('configurator');
   var data= {
-    nodes: nodes,
-    edges: edges,
+    nodes: dv_nodes,
+    edges: dv_edges,
   };
 
 
   
-  var network = new vis.Network(container, data, options);  
-  next(network);
+  var network = new vis.Network(container, data, options); 
+  return(network); 
+//  next(network);
 
 //=======================================================================
 // Network Event Manager
@@ -184,12 +207,20 @@ var produceVis = function(relationsList, next){
 
 };
 
+    var findInstanceId = function(myarray, value) {
+        var result = $.grep(myarray, function(e){ return (e.text == value); });
+        return((result.length != 0));
+    };
 
+    var findClassName = function(myarray, value) {
+        var result = $.grep(myarray, function(e){ return (e.name == value); });
+        return((result.length != 0));
+    };
 
-
-
-
-
+    var isInFilterClass = function(myarray, classname){
+        var result = $.grep(myarray, function(e) {return (e.name == classname); });
+        return(result[0].selected);
+    };
 
 
     var getrelations = function(myarray){

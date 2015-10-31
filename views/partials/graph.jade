@@ -1,4 +1,4 @@
-script(src='client/controllers/network_config.js')
+script(src='client/config/network_config.js')
 .container
   .container-fluid  
     .row
@@ -42,32 +42,23 @@ script(src='client/controllers/network_config.js')
       .col-md-2
         #actionbar
           h4 Action Bar
-          .input-group
-            span.input-group-addon Filter
-            input.form-control(type='search', placeholder='type to filter', ng-model="thefilter")
           span
-          .button-group(role="group")
+          .btn-group(role="group")
             .button.btn.btn-default(type="button", ng-click="togglefullscreen()", aria-label='Toggle Full Screen')
               span.glyphicon.glyphicon-fullscreen(aria-hidden = true)
-            .button.btn.btn-default(type="button", aria-label='Fit Screen')
+            .button.btn.btn-default(type="button", ng-click="fit()", aria-label='Fit Screen')
               span.glyphicon.glyphicon-screenshot(aria-hidden = true)
-          span
-          .button-group(role="group")
-            .button.btn.btn-default(type="button", aria-label='Zoom In')
-              span.glyphicon.glyphicon-zoom-in(aria-hidden = true)
-            .button.btn.btn-default(type="button", aria-label='Zoom Out')
-              span.glyphicon.glyphicon-zoom-out(aria-hidden = true)
-          span
-          .button-group(role="group")
-            .button.btn.btn-default(type="button", aria-label='Move Up')
-              span.glyphicon.glyphicon-arrow-up(aria-hidden = true)
-            .button.btn.btn-default(type="button", aria-label='Move Left')
-              span.glyphicon.glyphicon-arrow-left(aria-hidden = true)
-            .button.btn.btn-default(type="button", aria-label='Move Right')
-              span.glyphicon.glyphicon-arrow-right(aria-hidden = true)
-            .button.btn.btn-default(type="button", aria-label='Move Down')
-              span.glyphicon.glyphicon-arrow-down(aria-hidden = true)
-        span
+          h4 Filters
+          h5 Classes
+            .checkbox
+              label(ng-repeat="n in nodesClassList")
+                input.checkbox(type="checkbox", ng-change="togglenodesclass()", ng-model="n.selected") 
+                .filter-class {{ n.name }}
+          h5 Relationships
+            .checkbox
+              label(ng-repeat="e in edgesClassList")
+                input.checkbox(type="checkbox", ng-change="toggleedgesclass()", ng-model="e.selected") 
+                .filter-class {{ e.name }}
         #configurator
     .panel-2.hidden
       form.form-filter

@@ -48,12 +48,6 @@ var options = {
 
   groups:{
     useDefaultGroups: false,
-    5: {
-
-    },
-    10: {
-
-    },
     BMC_COMPUTERSYSTEM: {
         shape: 'image',
         image: '/images/graph_images/BMC_COMPUTERSYSTEM.png',
@@ -72,7 +66,6 @@ var options = {
     BMC_PRODUCT: {
         size: 16,
         color: '#00CC00'
-
     },
     BMC_OPERATINGSYSTEM: {
         color: '#0000CC'
@@ -96,7 +89,8 @@ var options = {
         size: 10
     },
     BMC_APPLICATION: {
-        color: '#CCCC00'
+        color: '#CCCC00',
+        size: 30
     },
     BMC_IPCONNECTIVITYSUBNET: {
         size: 10,
@@ -108,9 +102,16 @@ var options = {
         size: 10
     },
     BMC_APPLICATIONSERVICE: {
+        shape: 'triangle',
         color: '#00CCCC',
         size: 15
-    }
+    },
+    BMC_DATABASE: {
+        color:"#CC0000",
+        size: 15,
+        shape: 'image',
+        image: '/images/graph_images/BMC_DATABASE.png',
+    },
   },
 
 // ---- LAYOUT ----
