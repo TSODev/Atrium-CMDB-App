@@ -94,7 +94,7 @@ var options = {
     },
     BMC_IPCONNECTIVITYSUBNET: {
         size: 10,
-        shape: 'square',
+        shape: 'star',
         color: '#CCCCFF'
     },
     'BMC.CORE:BMC_CONCRETECOLLECTION': {
@@ -110,8 +110,16 @@ var options = {
         color:"#CC0000",
         size: 15,
         shape: 'image',
-        image: '/images/graph_images/BMC_DATABASE.png',
+        image: '/images/graph_images/BMC_DATABASE.png'
     },
+    BMC_MAINFRAME: {
+        shape: 'diamond',
+        color: '#CC00CC'
+    }, 
+    BMC_VIRTUALSYSTEMENABLER: {
+        shape: 'square',
+        color: '#CCCC00'
+    },   
   },
 
 // ---- LAYOUT ----

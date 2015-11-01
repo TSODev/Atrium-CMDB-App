@@ -70,6 +70,27 @@ CMDBappControllers.controller('graphCtrl', function($scope, $http, $location, $r
         network.fit();
     };
 
+    ModalDetails = function(instanceId){
+     console.log("Looking for details for : " + instanceId);
+     var req = $http.get("api/details/" + instanceId)
+         .success(function(response){
+            console.log("Back from Server with success ! > " + response.status);
+             if (response.status != 200){
+                $scope.message = response.status;
+             } else {
+                $scope.attributes = response.data;  
+
+                $scope.modaltitle = valueForKeyInObject(response.data, 'Name'); 
+                $scope.showModal = true;               
+             };
+         })
+         .error(function(err){
+             console.log("Something goes wrong with in the process..." + err.data);
+             $scope.message = "Error : " + err.data.message.code + " - ";
+         });
+
+    }
+
 
 //========================================================
 // following code is used when page is loading to fill the table
@@ -146,14 +167,14 @@ var produceVis = function(relationsList,next){
         };
     };
 
-     var uniqCI = CIObjects;
+//     var uniqCI = CIObjects;
 
-    for (var i = 0; i < uniqCI.length; i++) {
+    for (var i = 0; i < CIObjects.length; i++) {
             ds_nodes.add({
-                id: uniqCI[i].text,
-                label: uniqCI[i].name,
-                group: uniqCI[i].classname,                                 // Group By Class Name
-                title: uniqCI[i].classname + " : " + uniqCI[i].name
+                id: CIObjects[i].text,
+                label: CIObjects[i].name,
+                group: CIObjects[i].classname,                                 // Group By Class Name
+                title: CIObjects[i].classname + " : " + CIObjects[i].name
             });
     };
 
@@ -181,30 +202,32 @@ var produceVis = function(relationsList,next){
     edges: dv_edges,
   };
 
-
   
   var network = new vis.Network(container, data, options); 
-  return(network); 
-//  next(network);
+
 
 //=======================================================================
 // Network Event Manager
 //=======================================================================
 
-// network.on('afterDrawing', function(properties) {
-// //    next(network);
-// });
+ network.on('afterDrawing', function(properties) {
+//    console.log('Drawing done !');
+ });
 
 
-// network.on( 'click', function(properties) {
-//     alert('clicked node ' + properties.nodes);
-// });
 
 // network.on( 'dragEnd', function(properties) {
 //     alert('Drag End ' + JSON.stringify(network.getViewPosition()));
 // });
 
 
+network.on('click', function(properties){
+    // console.log('click on Node : ' + properties.nodes.valueOf());
+    // ModalDetails(properties.nodes.valueOf());
+});
+
+
+return(network); 
 };
 
     var findInstanceId = function(myarray, value) {
@@ -224,7 +247,7 @@ var produceVis = function(relationsList,next){
 
 
     var getrelations = function(myarray){
-
+        //
         //ToDo - Need to include the injected object attributes for Source and Destination in CSV
         //
             ciarray = myarray;

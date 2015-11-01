@@ -11,6 +11,10 @@ CMDBapp.config(['$routeProvider',
                 templateUrl: '/login',
                 controller: 'loginProcess'
             }).
+            when('/prefs', {
+                 templateUrl: '/partials/prefs',
+                 controller: 'defaultCtrl'
+             }).
             when('/query', {
                  templateUrl: '/partials/query',
                  controller: 'queryCtrl'
@@ -75,6 +79,8 @@ var CMDBappControllers = angular.module('CMDBappControllers', []);
 CMDBappControllers.controller('defaultCtrl', function($scope, $location){
     $scope.title = "";
     console.log("Home Controller");
+
+    $scope.prefs_title = "CMDB App - Preferences";
 });
 
 

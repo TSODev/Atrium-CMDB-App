@@ -21,3 +21,28 @@ var dv_edges = new vis.DataView(ds_edges, {
 
 var nodesClassList = new Array();
 var edgesClassList = new Array();
+
+
+var valueForKeyInObject = function(data, key){
+    for (i = 0 ; i <data.length ; i++){
+        if (data[i].key === key){
+            return data[i].value;
+            break;
+        };
+    };
+    return -1;
+};
+
+
+var getci = function(myarray){
+     var ciarray = new Array();
+     for (i=0 ; i<myarray.length ; i++){
+//           console.log("("+i+")"+ JSON.stringify(myarray[i].attributes));
+         ciarray.push(myarray[i].attributes);
+     };
+     return(ciarray);
+};
+
+var getkeyname = function(myarray){
+    return(myarray[0].key);
+};

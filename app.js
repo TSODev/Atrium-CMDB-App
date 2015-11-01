@@ -32,11 +32,6 @@ app.use('/bower_components',  express.static( path.join(__dirname, '/bower_compo
 app.use('/client',  express.static( path.join(__dirname, '/client')));
 
 app.use(session({
-  //store: new RedisStore({
-  //  host:'127.0.0.1',
-  //  port:6380,
-  //  prefix:'sess'
-  //}),
   secret: 'TSOKey',
   resave: true,
   saveUninitialized: true
@@ -46,9 +41,6 @@ app.use('/', routes);
 app.use('/users', users);
 //app.use('/login', login);
 app.use('/api', api);
-// app.use('/api/details',details);
-// app.use('/api/graph',graph);
-// app.use('/cmdb',cmdb)
 
 app.get('/partials/:name', function (req, res)
 { var name = req.params.name;

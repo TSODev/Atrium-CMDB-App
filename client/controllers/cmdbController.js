@@ -97,27 +97,27 @@ CMDBappControllers.controller('cmdbCtrl', function($scope, $http, $location, $ro
              $scope.message = "Error : " + err.data.message.code + " - ";
          });
 
-    var valueForKeyInObject = function(data, key){
-        for (i = 0 ; i <data.length ; i++){
-            if (data[i].key === key){
-                return data[i].value;
-                break;
-            };
-        };
-        return -1;
-    };
+  //   var valueForKeyInObject = function(data, key){
+  //       for (i = 0 ; i <data.length ; i++){
+  //           if (data[i].key === key){
+  //               return data[i].value;
+  //               break;
+  //           };
+  //       };
+  //       return -1;
+  //   };
 
 
-    var getci = function(myarray){
-         var ciarray = new Array();
-         for (i=0 ; i<myarray.length ; i++){
-  //           console.log("("+i+")"+ JSON.stringify(myarray[i].attributes));
-             ciarray.push(myarray[i].attributes);
-         };
-         return(ciarray);
-    };
+  //   var getci = function(myarray){
+  //        var ciarray = new Array();
+  //        for (i=0 ; i<myarray.length ; i++){
+  // //           console.log("("+i+")"+ JSON.stringify(myarray[i].attributes));
+  //            ciarray.push(myarray[i].attributes);
+  //        };
+  //        return(ciarray);
+  //   };
 
-    var getkeyname = function(myarray){
-        return(myarray[0].key);
-    };
+  //   var getkeyname = function(myarray){
+  //       return(myarray[0].key);
+  //   };
 });

@@ -23,23 +23,9 @@
                   a(href='#') About
 .panel.panel-default
   .panel-heading
-    h5 {{ heading }}
+    h5 {{ pref_heading }}
   .panel-body
-    h3 {{title}}
-      form(role='form')
-      .row
-        .col-md-4
-          .form-group
-            .form-group
-              h4.help-block Define the request with a root class
-              label.control-label(for='formInput23') Root Class
-              select#formInput23.form-control(ng-model="class", ng-options="e.values['Class Name'] for e in entries", ng-change="update()" )
-                option ---- Choose a Class ----
-      .row
-        .col-md-8          
-          label.control-label Additional query
-          textarea.form-control(ng-model="addquery", rows='1', placeholder="not implemented yet")
-      h4.italic.help-block use expression like ('field' = "data") .
-      button.btn.btn-primary(ng-click="submitCI()", type='submit') Continue   
+    h3 {{ pref_title }}
+      form(role='form')   
   .panel-footer
     h5 Footer - {{ footer }}

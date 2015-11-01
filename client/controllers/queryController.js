@@ -17,6 +17,15 @@ CMDBappControllers.controller('queryCtrl', function($scope, $http, $location, $r
         selectedclass = $scope.class.values['Class Name'];
     };
 
+// Clear the graph datastore
+
+    ds_nodes.clear();
+    ds_edges.clear();
+
+    nodesClassList.splice(0,nodesClassList.length);
+    edgesClassList.splice(0,edgesClassList.length);
+
+
 //========================================================
 // following code is used to get the ClassName List
 //---------------------------------------------------------

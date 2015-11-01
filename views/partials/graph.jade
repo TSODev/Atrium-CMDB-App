@@ -36,7 +36,7 @@ script(src='client/config/network_config.js')
   #header.panel-heading
     h5 {{ heading }}
   .panel-body
-    .panel-1
+    .panel
       .col-md-10
         #mynetwork
       .col-md-2
@@ -49,18 +49,20 @@ script(src='client/config/network_config.js')
             .button.btn.btn-default(type="button", ng-click="fit()", aria-label='Fit Screen')
               span.glyphicon.glyphicon-screenshot(aria-hidden = true)
           h4 Filters
-          h5 Classes
-            .checkbox
-              label(ng-repeat="n in nodesClassList")
-                input.checkbox(type="checkbox", ng-change="togglenodesclass()", ng-model="n.selected") 
-                .filter-class {{ n.name }}
-          h5 Relationships
-            .checkbox
-              label(ng-repeat="e in edgesClassList")
-                input.checkbox(type="checkbox", ng-change="toggleedgesclass()", ng-model="e.selected") 
-                .filter-class {{ e.name }}
+          .list-group
+            h5 Classes
+              .checkbox
+                label(ng-repeat="n in nodesClassList")
+                  input.checkbox.list-group-item(type="checkbox", ng-change="togglenodesclass()", ng-model="n.selected") 
+                  .filter-class {{ n.name }}
+          .list-group
+            h5 Relationships
+              .checkbox
+                label(ng-repeat="e in edgesClassList")
+                  input.checkbox.list-group-item(type="checkbox", ng-change="toggleedgesclass()", ng-model="e.selected") 
+                  .filter-class {{ e.name }}
         #configurator
-    .panel-2.hidden
+    .panel.hidden
       form.form-filter
         h3 {{title}}
         .row
@@ -123,3 +125,22 @@ script(src='client/config/network_config.js')
         #myoldnetwork
       .modal-footer
           button.btn.btn-default(data-dismiss="modal") Close
+#MyModal.modal.fade(tabindex="-1", role="dialog", aria-labelledby="MyModalLabel")
+  .modal-dialog(role="document")
+    .modal-content
+      .modal-header
+        button.close(data-dismiss="modal", aria-label="Close")
+          span(aria-hidden="true") &times;
+        h4#MyModalLabel.modal-title {{modaltitle}}
+      .modal-body
+        table.table.table-striped.table-bordered.table-condensed(table-layout="fixed" word-wrap="break-word")
+          thead
+            tr
+              th Attributes
+              th Value
+          tbody
+            tr(ng-repeat="a in attributes",ng-class-odd="'odd'" ,ng-class-even="'even'", ng-if="attributes")
+              td {{ a.key }}
+              td {{ a.value }}
+      .modal-footer
+          button.btn.btn-primary(data-dismiss="modal") Close
