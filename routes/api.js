@@ -64,24 +64,18 @@ var askforfield = function(req, index, InstanceId, fields, next){
 
 var getgraph = function(req, InstanceId, next){
 
-//    console.log("I now arrive in graph call... , Id is " + InstanceId);
-
     var arjwt = req.session.jwt;
     var servername = req.session.servername;
     var port = req.session.port;
 
-    var path = "/api/cmdb/v1/instance/BMC.ASSET/BMC.CORE/BMC_BaseElement/";
-//    var url = "https://"+servername+":"+port+path + InstanceId + "/graph?rel=(BMC_BaseRelationship,BMC.CORE,2)&cl=(BMC_BaseElement,BMC.CORE)&mode=2&level=10";
-    var url = "https://"+servername+":"+port+path + InstanceId + "/graph?rel=(BMC_BaseRelationship,BMC.CORE,2)&cl=(BMC_BaseElement,BMC.CORE)&mode=0&level=3";
-    // var url = "https://"+servername+":"+port+path + InstanceId + 
-    //             "/graph?rel=(BMC_BaseRelationship,BMC.CORE,"+ api_options.graph.rel + ")" +
-    //             "&cl=(BMC_BaseElement,BMC.CORE)"+
-    //             "&mode="+ api_options.graph.mode +
-    //             "&level=" + api_options.graph.level;
+    var path = "/api/cmdb/v1/instance/"+req.cookies.dataset+"/"+req.cookies.namespace+"/BMC_BaseElement/";
+    var url = "https://"+servername+":"+port+path + InstanceId + 
+                "/graph?rel=(BMC_BaseRelationship,BMC.CORE,"+ req.cookies.rel + ")" +
+                "&cl=(BMC_BaseElement,BMC.CORE)"+
+                "&mode="+ req.cookies.cl +
+                "&level=" + req.cookies.level;
 
     var relations = new Array();
-
-//    console.log("asking : " + url);
 
     superagent.get(url)
         .type('application/json')
@@ -127,23 +121,18 @@ router.get('/:ClassId', function(req, res, next) {
 
 //    console.log("Using session token : " + arjwt);
 
-    var path = "/api/cmdb/v1/instance/BMC.ASSET/BMC.CORE/";
+    var path = "/api/cmdb/v1/instance/"+req.cookies.dataset+"/"+req.cookies.namespace+"/";
 //        path: "/api/cmdb/v1/instance/BMC.ASSET/BMC.CORE/BMC_BaseElement";
     var host = req.session.servername;
         port = req.session.portnumber;
 
     var url = "https://"+host+":"+port+path+req.params.ClassId;
 
-//    console.log("asking : " + url);
-
     superagent.get(url)
         .type('application/json')
         .set('Authorization', 'AR-JWT ' + arjwt)
         .end(function(e,response){
-//            console.log("response : " + response + " Error : " + e);
             if (e == null){
-//                console.log("get from superagent : " + JSON.stringify(response.text));
-//                console.log("get from superagent : ");
                 status = response.status;
                 if (status == 200){
          // parsed response body as js object
@@ -189,9 +178,9 @@ router.get('/details/:Id', function (req, res, next) {
     var data = {};
 
     var option = {
-        path: "/api/cmdb/v1/instance/BMC.ASSET/BMC.CORE/BMC_BaseElement/",
-        dataset: "BMC.ASSET",
-        namespace: "BMC.CORE",
+        path: "/api/cmdb/v1/instance/"+req.cookies.dataset+"/"+req.cookies.namespace+"/BMC_BaseElement/",
+        dataset: req.cookies.dataset,
+        namespace: req.cookies.namespace,
         classname: "BMC_ComputerSystem",
         host: servername,
         port: port,
@@ -289,7 +278,6 @@ router.get('/graph/:Id', function (req, res, next) {
                 rel = data[i];
                 askforfield(req, i, rel['Source.InstanceId'], requested_fields, function(status, index, fields){
                     if (status == 200){
-//                        console.log("Back from askfordetail with : " + index + " - " + JSON.stringify(fields));
                         data[index].SourceInfo = fields.attributes;
                         call_counter += 1;
                         if (call_counter == (2 * data.length)){
@@ -303,7 +291,6 @@ router.get('/graph/:Id', function (req, res, next) {
                 });
                 askforfield(req, i, rel['Destination.InstanceId'], requested_fields, function(status, index,  fields){
                     if (status == 200){
-//                        console.log("Back from askfordetail with : " + index + " - " + JSON.stringify(fields));
                         data[index].DestinationInfo = fields.attributes;
                         call_counter += 1;
                         if (call_counter == (2 * data.length)){
@@ -329,6 +316,89 @@ router.get('/graph/:Id', function (req, res, next) {
      });
 
 });
+
+//====================================================================================================================
+// api/user/:Id : Serving User details
+//===============================================
+router.get('/user/:Id', function (req, res, next) {
+    var Id = req.params.Id;
+
+    var arjwt = req.session.jwt;
+    var servername = req.session.servername;
+    var port = req.session.port;
+
+    var data = {};
+
+    var option = {
+        path: "/api/arsys/v1/entry/User?q='Login Name'=",
+        host: servername,
+        port: port,
+        method: "GET"
+    };
+
+    var args = {
+        headers: {
+            'Content-Type': "application/json",
+            'Authorization': "AR-JWT " + arjwt
+        }
+    };
+
+    var url = "https://"+option.host+":"+option.port+option.path + Id;
+
+    var details = []
+
+    superagent.get(url)
+        .type('application/json')
+        .set('Authorization', 'AR-JWT ' + arjwt)
+        .end(function(e,response){
+            if (e == null){
+                status = response.status;
+                if (status == 200){
+                var data = JSON.parse(response.text); 
+                var attr = data.attributes;
+
+                 var index = 0;
+                 _.each(attr, function (val, key) {
+
+                    if (key === "AttributeDataSourceList"){
+                        if (val != null)
+                                val = val.replace(/,/g,", ")
+                    };
+
+                     details.push({key: key,
+                                    value: val});
+                     index += 1;
+                 });
+
+                    res.send({
+                        status : 200,
+                        data : details
+                    });
+                    res.status(status);
+                    res.end();
+                } else {
+                    console.log("Error : Request status : "+ status);
+                    res.send({
+                        status : status,
+                        data : response
+                    });
+                    res.status(status);
+                    res.end();
+                }
+            }
+            else {
+                console.log("Cannot complete the request - " + e );
+                res.send({
+                    status: 500,
+                    data: e
+                });
+                res.status(500);
+                res.end();
+            };
+        });    
+
+});
+
 
 
 //====================================================================================================================
@@ -445,8 +515,6 @@ var getObject = function(req, ObjectId, next){
 };
 
 router.get('/utilities/Class', function (req, res, next) {
-
-//    console.log("I am in Utilities ! looking for OBJSTR:Class");
 
     getObject(req, "Class?q='Class Type'="+'"Class"'+"AND'Abstract'="+'"No"', function(status, data){
             res.send(data.entries);

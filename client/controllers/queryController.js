@@ -2,14 +2,13 @@
 // query Page
 //=============
 
-CMDBappControllers.controller('queryCtrl', function($scope, $http, $location, $routeParams){
+CMDBappControllers.controller('queryCtrl', function($scope, $http, $location, $routeParams, $cookies, $cookieStore){
     $scope.title = "CMDB - Query";
     $scope.heading = "Loading";
     var selectedclass = 'BMC_ComputerSystem';
     $scope.submitCI = function(){
         console.log("submit button");
         $location.path('/cmdb').search({class: selectedclass});
-
     };
 
     $scope.update = function(){
@@ -24,6 +23,43 @@ CMDBappControllers.controller('queryCtrl', function($scope, $http, $location, $r
 
     nodesClassList.splice(0,nodesClassList.length);
     edgesClassList.splice(0,edgesClassList.length);
+
+// Get Default values
+
+    if ($cookies.get('namespace')){
+        $scope.namespace = $cookies.get('namespace');
+    } else {
+        $scope.namespace = "BMC.CORE";
+        $cookies.put('namespace' , $scope.namespace);
+    };
+
+    if ($cookies.get('dataset')){
+        $scope.dataset = $cookies.get('dataset');
+    } else {
+        $scope.dataset = "BMC.ASSET";
+        $cookies.put('dataset' , $scope.dataset);
+    };
+
+    if ($cookies.get('rel')){
+        $scope.rel = $cookies.get('rel');
+    } else {
+        $scope.rel = "2";
+        $cookies.put('rel' , $scope.rel);
+    };
+
+    if ($cookies.get('cl')){
+        $scope.cl = $cookies.get('cl');
+    } else {
+        $scope.cl = "2";
+        $cookies.put('cl' , $scope.cl);
+    };
+
+    if ($cookies.get('level')){
+        $scope.level = $cookies.get('level');
+    } else {
+        $scope.level = "3";
+        $cookies.put('level' , $scope.level);
+    }; 
 
 
 //========================================================

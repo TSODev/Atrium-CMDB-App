@@ -5,6 +5,9 @@
         .navbar-inner
           a.navbar-brand
             img.navlogo(alt="bmc" src="images/bmc_dna.png")
+          ul.nav.navbar-nav
+            li
+              a(ng-click="goHome()",href='#/query') Home
           ul.nav.navbar-nav.pull-right
             li.dropdown
               a.dropdown-toggle(data-toggle='dropdown')
@@ -23,9 +26,47 @@
                   a(href='#') About
 .panel.panel-default
   .panel-heading
-    h5 {{ pref_heading }}
+    h5 {{ heading }}
   .panel-body
-    h3 {{ pref_title }}
-      form(role='form')   
-  .panel-footer
-    h5 Footer - {{ footer }}
+    h3 {{ preftitle }}
+.container
+  form(role='form')
+    .row
+      .col-md-4.col-md-6
+        h3 Data Model
+        .row
+          .col-md-6
+            label.control-label Namespace
+            select.form-control(ng-model="namespace")
+              option(value='BMC.CORE') BMC.CORE
+          .col-md-6
+            label.control-label
+              | DataSet
+              br
+            select.form-control(ng-model="dataset")
+              option(value='BMC.ASSET') BMC.ASSET
+      .col-md-8
+        h3 Graph Query Configuration
+        .row
+          .col-md-4
+            label.control-label Relation
+            select.form-control(ng-model="rel")
+              option(value='0')  From Source To Destination
+              option.disabled(value='1')  From Destination To Source
+              option(value='2')  Any Direction
+          .col-md-4
+            label.control-label Stop
+            select.form-control(ng-model="cl")
+              option(value='0') when first non-matching found
+              option(value='1') when first matching found
+              option(value='2') walk the entire graph
+          .col-md-4
+            label.control-label Level
+            select.form-control(ng-model="level")
+              option(value='1') 1
+              option(value='2') 2
+              option(value='3') 3
+              option(value='4') 4
+              option(value='5') 5
+    .form-group
+    button.btn.btn-primary(ng-click="SavePrefs()", type='submit') Save

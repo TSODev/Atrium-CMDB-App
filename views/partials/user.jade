@@ -1,0 +1,64 @@
+container
+  .container-fluid  
+    .row
+      nav.navbar.navbar-default(role='navigation')
+        .navbar-inner
+          a.navbar-brand
+            img.navlogo(alt="bmc" src="images/bmc_dna.png")
+          ul.nav.navbar-nav
+            li
+              a(ng-click="goHome()",href='#/query') Home
+          ul.nav.navbar-nav.pull-right
+            li.dropdown
+              a.dropdown-toggle(data-toggle='dropdown')
+                | User 
+                b.caret
+              ul.dropdown-menu.dropdown-menu-right
+                li
+                  a(href='#/user') Info
+                li
+                  a(href='#') Disconnect
+                li.divider
+                li
+                  a(href='#/prefs') Preferences
+                li.divider
+                li
+                  a(href='#') About
+.panel.panel-default
+  .panel-heading
+    h5 {{ heading }}
+  .panel-body
+    h3 {{ usertitle }}
+    .container
+      form(role='form')
+        .row
+          .col-md-4
+            h3 {{ Full Name }}
+        .row
+        .row
+          .col-md-4
+            label.control-label Email Address
+          .col-md-4
+            input.form-control(type='text', placeholder='Placeholder text')
+        .row
+          .col-md-4
+            label.control-label Default Notify Mechanism
+          .col-md-4
+            input.form-control(type='text', placeholder='Placeholder text')
+        .row
+          .col-md-4
+            label.control-label License Type
+          .col-md-4
+            input.form-control(type='text', placeholder='Placeholder text')
+        .row
+          .col-md-4
+            label.control-label Computed Group List
+          .col-md-4
+            textarea.form-control(rows='3')
+        .row
+          .col-md-4
+            label.control-label Application License
+          .col-md-4
+            textarea.form-control(rows='3')
+        button.btn.btn-primary(type='submit') Cancel
+

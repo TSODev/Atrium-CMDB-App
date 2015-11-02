@@ -81,7 +81,7 @@ CMDBappControllers.controller('graphCtrl', function($scope, $http, $location, $r
                 $scope.attributes = response.data;  
 
                 $scope.modaltitle = valueForKeyInObject(response.data, 'Name'); 
-                $scope.showModal = true;               
+                $('#DetailsModal').modal('show') ;              
              };
          })
          .error(function(err){
@@ -222,8 +222,11 @@ var produceVis = function(relationsList,next){
 
 
 network.on('click', function(properties){
-    // console.log('click on Node : ' + properties.nodes.valueOf());
-    // ModalDetails(properties.nodes.valueOf());
+    var nodeId = properties.nodes;
+    if (nodeId.length != 0){
+        console.log('click on Node : ' + nodeId.valueOf());
+        ModalDetails(nodeId.valueOf());       
+    };
 });
 
 

@@ -71,7 +71,8 @@ var options = {
         color: '#0000CC'
     },
     BMC_SOFTWARESERVER: {
-        color: '#CC0000'
+        color: '#389BB8',
+        size: 12
     },
     BMC_IPENDPOINT: {
         color: '#D4A9FF',  
@@ -102,9 +103,9 @@ var options = {
         size: 10
     },
     BMC_APPLICATIONSERVICE: {
-        shape: 'triangle',
-        color: '#00CCCC',
-        size: 15
+        shape: 'dot',
+        color: '#FFFF90',
+        size: 25
     },
     BMC_DATABASE: {
         color:"#CC0000",

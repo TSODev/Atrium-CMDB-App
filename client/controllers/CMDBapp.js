@@ -1,7 +1,7 @@
 /**
  * Created by tsoulie on 16/10/2015.
  */
-var CMDBapp = angular.module('CMDBapp', ['ngRoute', 'CMDBappControllers', 'angular-loading-bar', 'ngSanitize', 'ngCsv']);
+var CMDBapp = angular.module('CMDBapp', ['ngRoute', 'CMDBappControllers', 'angular-loading-bar', 'ngSanitize', 'ngCsv', 'ngCookies']);
 
 CMDBapp.config(['$routeProvider',
     function($routeProvider, $locationProvider) {
@@ -13,6 +13,10 @@ CMDBapp.config(['$routeProvider',
             }).
             when('/prefs', {
                  templateUrl: '/partials/prefs',
+                 controller: 'defaultCtrl'
+             }).
+            when('/user/', {
+                 templateUrl: '/partials/user',
                  controller: 'defaultCtrl'
              }).
             when('/query', {
@@ -76,11 +80,30 @@ var CMDBappControllers = angular.module('CMDBappControllers', []);
 //============
 // Home Page (index)
 //============
-CMDBappControllers.controller('defaultCtrl', function($scope, $location){
+CMDBappControllers.controller('defaultCtrl', function($scope, $location, $cookies, $cookieStore){
     $scope.title = "";
     console.log("Home Controller");
 
-    $scope.prefs_title = "CMDB App - Preferences";
+    $scope.preftitle = "CMDB App - Preferences";
+
+
+        $scope.namespace = $cookies.get('namespace');
+        $scope.dataset = $cookies.get('dataset');
+        $scope.rel = $cookies.get('rel');
+        $scope.cl = $cookies.get('cl');
+        $scope.level = $cookies.get('level'); 
+
+
+    $scope.SavePrefs = function(){
+        $cookies.put('namespace', $scope.namespace);
+        $cookies.put('dataset', $scope.dataset);
+        $cookies.put('rel', $scope.rel);
+        $cookies.put('cl', $scope.cl);
+        $cookies.put('level', $scope.level);  
+        console.log("Parameters saved in cookies.")      
+    };
+                  
+
 });
 
 
