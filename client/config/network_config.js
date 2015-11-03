@@ -13,9 +13,6 @@ var options = {
 
   configure: {
     enabled: false,
-    filter: 'nodes,edges',
-    container: configurator,
-    showButton: true
   },
 
 // ---- EDGES ----

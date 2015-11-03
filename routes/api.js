@@ -6,7 +6,7 @@ var express = require('express');
 var router = express.Router();
 var _ = require('underscore');
 var superagent = require('superagent');
-var sa2 = require('superagent');
+//var sa2 = require('superagent');
 
 // route middleware that will happen on every request
 router.use(function(req, res, next) {
@@ -31,7 +31,7 @@ var askforfield = function(req, index, InstanceId, fields, next){
     var arjwt = req.session.jwt;
     var servername = req.session.servername;
     var port = req.session.portnumber;
-    var path = "/api/cmdb/v1/instance/BMC.ASSET/BMC.CORE/BMC_BaseElement/" + InstanceId;
+    var path = "/api/cmdb/v1/instance/"+req.cookies.dataset+"/"+req.cookies.namespace+"/BMC_BaseElement/" + InstanceId;
     var addurl = '?fields=';
     _.each(fields, function(f){
         addurl += f+',';
@@ -76,6 +76,8 @@ var getgraph = function(req, InstanceId, next){
                 "&level=" + req.cookies.level;
 
     var relations = new Array();
+
+    console.log("URL : " + url);
 
     superagent.get(url)
         .type('application/json')
@@ -127,6 +129,8 @@ router.get('/:ClassId', function(req, res, next) {
         port = req.session.portnumber;
 
     var url = "https://"+host+":"+port+path+req.params.ClassId;
+
+    console.log("URL : " + url);
 
     superagent.get(url)
         .type('application/json')
@@ -330,7 +334,7 @@ router.get('/user/:Id', function (req, res, next) {
     var data = {};
 
     var option = {
-        path: "/api/arsys/v1/entry/User?q='Login Name'=",
+        path: "/api/arsys/v1/entry/User?q='Login Name'="+'"'+Id+'"',
         host: servername,
         port: port,
         method: "GET"
@@ -343,7 +347,7 @@ router.get('/user/:Id', function (req, res, next) {
         }
     };
 
-    var url = "https://"+option.host+":"+option.port+option.path + Id;
+    var url = "https://"+option.host+":"+option.port+option.path;
 
     var details = []
 
@@ -355,24 +359,9 @@ router.get('/user/:Id', function (req, res, next) {
                 status = response.status;
                 if (status == 200){
                 var data = JSON.parse(response.text); 
-                var attr = data.attributes;
-
-                 var index = 0;
-                 _.each(attr, function (val, key) {
-
-                    if (key === "AttributeDataSourceList"){
-                        if (val != null)
-                                val = val.replace(/,/g,", ")
-                    };
-
-                     details.push({key: key,
-                                    value: val});
-                     index += 1;
-                 });
-
                     res.send({
                         status : 200,
-                        data : details
+                        data : data
                     });
                     res.status(status);
                     res.end();
@@ -473,6 +462,74 @@ router.post('/login', function(req, res) {
             };
         });
 });
+
+//====================================================================================================================
+// api/utilities/Dataset : Serving Dataset Get Info
+//===============================================
+router.get('/utilities/DataSet', function (req, res, next) {
+    var Id = req.params.Id;
+
+    var arjwt = req.session.jwt;
+    var servername = req.session.servername;
+    var port = req.session.port;
+
+    var data = {};
+
+    var option = {
+        path: "/api/arsys/v1/entry/BMC.CORE.CONFIG:BMC_Dataset",
+        host: servername,
+        port: port,
+        method: "GET"
+    };
+
+    var args = {
+        headers: {
+            'Content-Type': "application/json",
+            'Authorization': "AR-JWT " + arjwt
+        }
+    };
+
+    var url = "https://"+option.host+":"+option.port+option.path;
+
+    var details = []
+
+    superagent.get(url)
+        .type('application/json')
+        .set('Authorization', 'AR-JWT ' + arjwt)
+        .end(function(e,response){
+            if (e == null){
+                status = response.status;
+                if (status == 200){
+                var data = JSON.parse(response.text); 
+                    res.send({
+                        status : 200,
+                        data : data
+                    });
+                    res.status(status);
+                    res.end();
+                } else {
+                    console.log("Error : Request status : "+ status);
+                    res.send({
+                        status : status,
+                        data : response
+                    });
+                    res.status(status);
+                    res.end();
+                }
+            }
+            else {
+                console.log("Cannot complete the request - " + e );
+                res.send({
+                    status: 500,
+                    data: e
+                });
+                res.status(500);
+                res.end();
+            };
+        });    
+
+});
+
 
 
 //====================================================================================================================

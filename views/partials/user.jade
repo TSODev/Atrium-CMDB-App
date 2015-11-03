@@ -29,36 +29,36 @@ container
     h5 {{ heading }}
   .panel-body
     h3 {{ usertitle }}
-    .container
+    .container(ng-init="getUserInfo()")
       form(role='form')
         .row
           .col-md-4
-            h3 {{ Full Name }}
+            h3 {{ FullName }}
         .row
         .row
           .col-md-4
             label.control-label Email Address
           .col-md-4
-            input.form-control(type='text', placeholder='Placeholder text')
+            input.form-control.email(type='text', ng-model="EmailAddress",readonly='', placeholder='Placeholder text')
         .row
           .col-md-4
             label.control-label Default Notify Mechanism
           .col-md-4
-            input.form-control(type='text', placeholder='Placeholder text')
+            input.form-control.mechanism(type='text', ng-model="NofifyMechanism",readonly='', placeholder='Placeholder text')
         .row
           .col-md-4
             label.control-label License Type
           .col-md-4
-            input.form-control(type='text', placeholder='Placeholder text')
+            input.form-control.license(type='text', ng-model="LicenseType",readonly='', placeholder='Placeholder text')
         .row
           .col-md-4
             label.control-label Computed Group List
-          .col-md-4
-            textarea.form-control(rows='3')
+          .col-md-8
+            textarea.form-control.grp(rows='6', ng-model="ComputedGrpList", readonly='')
         .row
           .col-md-4
             label.control-label Application License
-          .col-md-4
-            textarea.form-control(rows='3')
-        button.btn.btn-primary(type='submit') Cancel
+          .col-md-8
+            textarea.form-control.application(rows='4', ng-model="ApplicationLicense", readonly='')
+        button.btn.btn-primary(ng-click="Cancel()", type='submit') Cancel
 

@@ -1,7 +1,7 @@
 /**
  * Created by tsoulie on 16/10/2015.
  */
-var CMDBapp = angular.module('CMDBapp', ['ngRoute', 'CMDBappControllers', 'angular-loading-bar', 'ngSanitize', 'ngCsv', 'ngCookies']);
+var CMDBapp = angular.module('CMDBapp', ['ngRoute', 'CMDBappControllers', 'angular-loading-bar', 'ngSanitize', 'ngCsv', 'ngCookies', 'ngStorage']);
 
 CMDBapp.config(['$routeProvider',
     function($routeProvider, $locationProvider) {
@@ -17,7 +17,7 @@ CMDBapp.config(['$routeProvider',
              }).
             when('/user/', {
                  templateUrl: '/partials/user',
-                 controller: 'defaultCtrl'
+                 controller: 'userCtrl'
              }).
             when('/query', {
                  templateUrl: '/partials/query',
@@ -77,15 +77,20 @@ CMDBapp.run(function($rootScope, $location) {
 
 var CMDBappControllers = angular.module('CMDBappControllers', []);
 
+
+// ToDo : Put cookies in security mode (http-only)
+// guess that it can be done by options in CookiesProviders
+
 //============
 // Home Page (index)
 //============
-CMDBappControllers.controller('defaultCtrl', function($scope, $location, $cookies, $cookieStore){
+CMDBappControllers.controller('defaultCtrl', function($scope, $http, $location, $cookies, $cookieStore){
     $scope.title = "";
     console.log("Home Controller");
 
     $scope.preftitle = "CMDB App - Preferences";
 
+//Info : Cookies are set at Home page.
 
         $scope.namespace = $cookies.get('namespace');
         $scope.dataset = $cookies.get('dataset');
@@ -93,16 +98,41 @@ CMDBappControllers.controller('defaultCtrl', function($scope, $location, $cookie
         $scope.cl = $cookies.get('cl');
         $scope.level = $cookies.get('level'); 
 
+    $scope.getSystemInfo = function(){
+        console.log("Ask for System Info...");
+                    
+        var req = $http.get("api/utilities/Dataset")
+            .success(function(response){
+                console.log("Back from Server with success ! > " + response.status + ": " + response.data);
+                // Todo : Create Alert windows if status is not 200
+                if (response.status != 200){
+                    $scope.message = response.data;
+                } else {
+                    console.log(response.data.entries);
+                    $scope.entries = response.data.entries;                    
+                };
+            })
+            .error(function(err){
+                console.log("Something goes wrong with in the login process..." + err.data);
+                $scope.message = "Error : " + err.data.message.code + " - ";
+            }); 
+    };  
+
+    $scope.Update = function(){
+
+    };      
+
 
     $scope.SavePrefs = function(){
+        console.log("Dataset : "+ JSON.stringify($scope.dataset));
         $cookies.put('namespace', $scope.namespace);
-        $cookies.put('dataset', $scope.dataset);
+        $cookies.put('dataset',$scope.dataset.values.CoreDatasetId);
         $cookies.put('rel', $scope.rel);
         $cookies.put('cl', $scope.cl);
         $cookies.put('level', $scope.level);  
-        console.log("Parameters saved in cookies.")      
+        console.log("Parameters saved in cookies."); 
+        $location.path('/query');     
     };
-                  
 
 });
 

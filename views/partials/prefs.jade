@@ -15,7 +15,7 @@
                 b.caret
               ul.dropdown-menu.dropdown-menu-right
                 li
-                  a(href='#') Info
+                  a(href='#/user') Info
                 li
                   a(href='#') Disconnect
                 li.divider
@@ -29,7 +29,7 @@
     h5 {{ heading }}
   .panel-body
     h3 {{ preftitle }}
-.container
+    .container(ng-init="getSystemInfo()")
   form(role='form')
     .row
       .col-md-4.col-md-6
@@ -43,8 +43,8 @@
             label.control-label
               | DataSet
               br
-            select.form-control(ng-model="dataset")
-              option(value='BMC.ASSET') BMC.ASSET
+            select.form-control(ng-model="dataset", ng-options="d as d.values.CoreDatasetId for d in entries", ng-change="update()" )
+              option
       .col-md-8
         h3 Graph Query Configuration
         .row

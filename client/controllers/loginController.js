@@ -2,7 +2,7 @@
 // Login Page
 //============
 
-CMDBappControllers.controller('loginProcess', function($scope,$http, $location, $rootScope ){
+CMDBappControllers.controller('loginProcess', function($scope,$http, $location, $rootScope, $cookies, $cookieStore ){
     $scope.message = "";
     console.log("Login Controller");
     $scope.signIn = function(){
@@ -24,7 +24,7 @@ CMDBappControllers.controller('loginProcess', function($scope,$http, $location, 
                 } else {
                     console.log("Mark as logged and go to new route...");
                     $rootScope.loggedInUser = $scope.username;
-//                    $location.path('cmdb');
+                    $cookies.put('username', $scope.username);
                     $location.path('query');
                 };
             })
