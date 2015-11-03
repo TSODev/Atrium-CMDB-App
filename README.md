@@ -19,11 +19,14 @@ App can export data to CSV files (*Menu ‘Actions -> Export’*)
 ##Installation
 
 Installation can easily be done in a standard BMC Remedy ITSM solution (version > 9.x) where Smart-IT is already installed.
-Please download the ZIP file from this Github repository and extract it **[AppDir]**
+
+Remedy 9 REST APIs needs to be enabled , please visit [https://docs.bmc.com/docs/display/public/ars91/Configuring+the+REST+API]().
+
+Then download the ZIP file from this Github repository and extract it **[AppDir]**
 
 node.js is already installed with Smart-IT. Please note the location **[NodeDir]**
 
-Create a batch file containing the following line : *(replace with your dir location)*
+Create a batch file containing the following line : *(replace with your dir locations)*
 [NodeDir]\node.exe [AppDir]\bin\www
 
 (A shell windows open with logs from the app)
