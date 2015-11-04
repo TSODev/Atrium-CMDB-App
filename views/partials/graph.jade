@@ -61,6 +61,12 @@ script(src='client/config/network_config.js')
                 label(ng-repeat="e in edgesClassList")
                   input.checkbox.list-group-item(type="checkbox", ng-change="toggleedgesclass()", ng-model="e.selected") 
                   .filter-class {{ e.name }}
+          .list-group
+            h5 Impact
+              .checkbox
+                label
+                  input.checkbox.list-group-item(type="checkbox", ng-change="toggleimpact()", ng-model="impact") 
+                  .filter-class Impact Only
         #configurator
     .panel.hidden
       form.form-filter

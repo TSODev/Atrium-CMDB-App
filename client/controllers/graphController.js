@@ -70,6 +70,14 @@ CMDBappControllers.controller('graphCtrl', function($scope, $http, $location, $r
         network.fit();
     };
 
+    $scope.toggleimpact = function(){
+        filterImpactOnly = $scope.impact;
+        console.log(filterImpactOnly);
+        dv_edges.refresh();
+        network.fit();
+    };
+
+
     ModalDetails = function(instanceId){
      console.log("Looking for details for : " + instanceId);
      var req = $http.get("api/details/" + instanceId)
@@ -167,8 +175,6 @@ var produceVis = function(relationsList,next){
         };
     };
 
-//     var uniqCI = CIObjects;
-
     for (var i = 0; i < CIObjects.length; i++) {
             ds_nodes.add({
                 id: CIObjects[i].text,
@@ -199,7 +205,7 @@ var produceVis = function(relationsList,next){
   var configurator = document.getElementById('configurator');
   var data= {
     nodes: dv_nodes,
-    edges: dv_edges,
+    edges: dv_edges
   };
 
   
@@ -248,6 +254,13 @@ return(network);
         return(result[0].selected);
     };
 
+    var isInFilterImpact = function(edges){
+        if ( filterImpactOnly ){
+            return(!edges);
+        } else {
+            return(true);
+        }       
+    };
 
     var getrelations = function(myarray){
         //
@@ -257,5 +270,3 @@ return(network);
          return(ciarray);
     };
 
-
-//});

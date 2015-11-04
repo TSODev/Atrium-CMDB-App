@@ -14,13 +14,15 @@ var dv_nodes = new vis.DataView(ds_nodes, {
      });
 var dv_edges = new vis.DataView(ds_edges, {
      filter: function (item) {
-             return(isInFilterClass(edgesClassList, item.title))
-//			return(true);
+            var FilteredClass = isInFilterClass(edgesClassList, item.title);
+            var IsImpactEdge = isInFilterImpact(item.dashes);
+             return(FilteredClass && IsImpactEdge);
      	}
 	 });
 
 var nodesClassList = new Array();
 var edgesClassList = new Array();
+var filterImpactOnly = false;
 
 
 var valueForKeyInObject = function(data, key){

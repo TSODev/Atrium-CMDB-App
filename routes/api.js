@@ -6,15 +6,41 @@ var express = require('express');
 var router = express.Router();
 var _ = require('underscore');
 var superagent = require('superagent');
+
+var winston = require('winston');
+  var logger = new (winston.Logger)({
+    transports: [
+      new (winston.transports.Console)({level: 'info'}),
+      new (winston.transports.File)({ filename: 'CMDBApp.log' })
+    ]
+  });
+
+
 //var sa2 = require('superagent');
 
-// route middleware that will happen on every request
-router.use(function(req, res, next) {
-    // log each request to the console
-    console.log("Router Middleware : " + req.method, req.url);
-    // continue doing what we were doing and go to the route
-    next();
-});
+// // route middleware that will happen on every request
+// router.use(function(req, res, next) {
+//     // log each request to the console
+//     console.log("Router Middleware : " + req.method, req.url);
+//     // continue doing what we were doing and go to the route
+//     next();
+// });
+
+//====================================================
+// Utility : Make the APICall
+//====================================================
+
+var CallAPI = function(url,next){
+
+    logger.log('info', "Call Api with : " + url);
+    superagent.get(url)
+        .type('application/json')
+        .timeout(5000)                                                // 10s timeout
+        .set('Authorization', 'AR-JWT ' + arjwt)
+        .end(function(e,response){
+                next(e,response);
+            }); 
+};
 
 //====================================================
 // Utility : Make a API call for specific fields for an InstanceId
@@ -22,11 +48,13 @@ router.use(function(req, res, next) {
 var publishdata = function(req, res, data){
     res.send(data);
     res.status(data.status);
-    res.end;
+    res.end();
 };
 
 
 var askforfield = function(req, index, InstanceId, fields, next){
+
+    logger.log('debug', "Ask for Fields : " + InstanceId + " - " + fields);
     var info = new Object();
     var arjwt = req.session.jwt;
     var servername = req.session.servername;
@@ -39,16 +67,15 @@ var askforfield = function(req, index, InstanceId, fields, next){
     addurl = addurl.slice(0, -1);                                    // remove latest ','
     var url = "https://"+servername+":"+port+path+addurl;
 
-//    console.log("asking : " + url);
 
     superagent.get(url)
         .type('application/json')
         .set('Authorization', 'AR-JWT ' + arjwt)
         .end(function(e,response){  
-//            console.log("END Event !");          
             if (e == null){
                 status = response.status;
                 if (status == 200){
+                    logger.log('debug',"Results : "+response.text);
                     next(status, index, JSON.parse(response.text));                 
                 } else {
                     console.log("Error : Request status : "+ status);
@@ -64,6 +91,8 @@ var askforfield = function(req, index, InstanceId, fields, next){
 
 var getgraph = function(req, InstanceId, next){
 
+    logger.log('debug','GetGraph for : ' + InstanceId);
+
     var arjwt = req.session.jwt;
     var servername = req.session.servername;
     var port = req.session.port;
@@ -77,16 +106,12 @@ var getgraph = function(req, InstanceId, next){
 
     var relations = new Array();
 
-    console.log("URL : " + url);
-
     superagent.get(url)
         .type('application/json')
         .timeout(10000)                                                // 10s timeout
         .set('Authorization', 'AR-JWT ' + arjwt)
         .end(function(e,response){
-//            console.log("response : " + response + " Error : " + e);
             if (e == null){
-//                console.log("get from superagent : ");
                 status = response.status;
                 if (status == 200){
 
@@ -121,16 +146,12 @@ router.get('/:ClassId', function(req, res, next) {
 
     var arjwt = req.session.jwt;
 
-//    console.log("Using session token : " + arjwt);
 
     var path = "/api/cmdb/v1/instance/"+req.cookies.dataset+"/"+req.cookies.namespace+"/";
-//        path: "/api/cmdb/v1/instance/BMC.ASSET/BMC.CORE/BMC_BaseElement";
     var host = req.session.servername;
         port = req.session.portnumber;
 
     var url = "https://"+host+":"+port+path+req.params.ClassId;
-
-    console.log("URL : " + url);
 
     superagent.get(url)
         .type('application/json')
@@ -202,16 +223,12 @@ router.get('/details/:Id', function (req, res, next) {
 
     var details = []
 
-//    console.log("asking : " + url);
 
     superagent.get(url)
         .type('application/json')
         .set('Authorization', 'AR-JWT ' + arjwt)
         .end(function(e,response){
-//            console.log("response : " + response + " Error : " + e);
             if (e == null){
-//                console.log("get from superagent : " + JSON.stringify(response.text));
-//                console.log("get from superagent : ");
                 status = response.status;
                 if (status == 200){
          // parsed response body as js object
@@ -266,7 +283,6 @@ router.get('/details/:Id', function (req, res, next) {
 router.get('/graph/:Id', function (req, res, next) {
 
      var Id = req.params.Id;
-//     console.log("I am in Graph ! with Id : " + Id);
 
      var relations = getgraph(req, Id, function(status, data){
         if (status == 200) {
@@ -399,7 +415,6 @@ router.get('/login', function(req, res, next){
 });
 
 router.post('/login', function(req, res) {
-   console.log("POST : Landing on api/login :");
     var data = {
         username: req.body.username,
         password: req.body.password
@@ -419,18 +434,13 @@ router.post('/login', function(req, res) {
 
     var url = "https://"+option.host+":"+option.port+option.path;
 
-//    console.log(option.host + ":" + option.port + " with " + data.username + "/" + data.password);
     superagent.post(url)
         .type('application/x-www-form-urlencoded')
         .send({username: data.username, password: data.password})
         .end(function(e,response){
-//            console.log("response : " + response + " Error : " + e);
             if (e == null){
-//                console.log("get from superagent : " + JSON.stringify(response));
-//                console.log("get from superagent : ");
                 status = response.status;
                 if (status == 200){
-//                    console.log("Token : " + response.text);
                     req.session.jwt = response.text;
                     req.session.servername = option.host;
                     req.session.portnumber = option.port;
@@ -537,7 +547,6 @@ router.get('/utilities/DataSet', function (req, res, next) {
 //==================================================================================
 var getObject = function(req, ObjectId, next){
 
-//    console.log("I now arrive in getObject call... , Id is " + ObjectId);
 
     var arjwt = req.session.jwt;
     var servername = req.session.servername
@@ -546,16 +555,13 @@ var getObject = function(req, ObjectId, next){
     var path = "/api/arsys/v1/entry/OBJSTR:" + ObjectId;
 
     var url = "https://"+servername+":"+port+path;
-//    console.log("asking : " + url);
 
     superagent.get(url)
         .type('application/json')
         .timeout(10000)                                                // 10s timeout
         .set('Authorization', 'AR-JWT ' + arjwt)
         .end(function(e,response){
-//            console.log("response : " + response + " Error : " + e);
             if (e == null){
-//                console.log("get from superagent : ");
                 status = response.status;
                 if (status == 200){
                     var data = JSON.parse(response.text); 

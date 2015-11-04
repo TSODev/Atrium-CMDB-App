@@ -108,7 +108,7 @@ CMDBappControllers.controller('defaultCtrl', function($scope, $http, $location, 
                 if (response.status != 200){
                     $scope.message = response.data;
                 } else {
-                    console.log(response.data.entries);
+//                    console.log(response.data.entries);
                     $scope.entries = response.data.entries;                    
                 };
             })
@@ -126,12 +126,12 @@ CMDBappControllers.controller('defaultCtrl', function($scope, $http, $location, 
     $scope.SavePrefs = function(){
         console.log("Dataset : "+ JSON.stringify($scope.dataset));
         $cookies.put('namespace', $scope.namespace);
-        $cookies.put('dataset',$scope.dataset.values.CoreDatasetId);
+        $cookies.put('dataset',$scope.dataset);
         $cookies.put('rel', $scope.rel);
         $cookies.put('cl', $scope.cl);
         $cookies.put('level', $scope.level);  
         console.log("Parameters saved in cookies."); 
-        $location.path('/query');     
+        $location.path('query');     
     };
 
 });

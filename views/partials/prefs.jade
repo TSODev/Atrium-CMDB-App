@@ -44,7 +44,7 @@
               | DataSet
               br
             select.form-control(ng-model="dataset", ng-options="d as d.values.CoreDatasetId for d in entries", ng-change="update()" )
-              option
+              option(value="dataset")
       .col-md-8
         h3 Graph Query Configuration
         .row

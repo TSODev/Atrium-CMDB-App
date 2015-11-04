@@ -6,6 +6,25 @@ CMDBappControllers.controller('queryCtrl', function($scope, $http, $location, $r
     $scope.title = "CMDB - Query";
     $scope.heading = "Loading";
     var selectedclass = 'BMC_ComputerSystem';
+
+    $scope.initQuery = function(){
+     var req = $http.get("api/utilities/Class")
+        .then( function successCallbak(response){
+            console.log("Back from Server with success ! > " + response.status);
+             // Todo : Create Alert windows if status is not 200
+             if (response.status != 200){
+                $scope.message = response.status;
+             } else {
+                $scope.heading = "Success";
+                $scope.entries = response.data;                 
+             };
+        }, function errorCallback(err){
+             console.log("Something goes wrong with in the login process..." + err.data);
+             $scope.message = "Error : " + err.data.message.code + " - ";
+        });  
+
+    };
+
     $scope.submitCI = function(){
         console.log("submit button");
         $location.path('/cmdb').search({class: selectedclass});
@@ -68,19 +87,19 @@ CMDBappControllers.controller('queryCtrl', function($scope, $http, $location, $r
     console.log("Query Controller");
 
 
-     var req = $http.get("api/utilities/Class")
-        .then( function successCallbak(response){
-            console.log("Back from Server with success ! > " + response.status);
-             // Todo : Create Alert windows if status is not 200
-             if (response.status != 200){
-                $scope.message = response.status;
-             } else {
-                $scope.heading = "Success";
-                $scope.entries = response.data;                 
-             };
-        }, function errorCallback(err){
-             console.log("Something goes wrong with in the login process..." + err.data);
-             $scope.message = "Error : " + err.data.message.code + " - ";
-        });
+     // var req = $http.get("api/utilities/Class")
+     //    .then( function successCallbak(response){
+     //        console.log("Back from Server with success ! > " + response.status);
+     //         // Todo : Create Alert windows if status is not 200
+     //         if (response.status != 200){
+     //            $scope.message = response.status;
+     //         } else {
+     //            $scope.heading = "Success";
+     //            $scope.entries = response.data;                 
+     //         };
+     //    }, function errorCallback(err){
+     //         console.log("Something goes wrong with in the login process..." + err.data);
+     //         $scope.message = "Error : " + err.data.message.code + " - ";
+     //    });
 
 });
