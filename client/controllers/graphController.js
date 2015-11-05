@@ -37,7 +37,6 @@ CMDBappControllers.controller('graphCtrl', function($scope, $http, $location, $r
     var fullscreen = false;
 
     $scope.togglefullscreen = function() {
-//      alert("Toggle : " + fullscreen + " - " + cur_width + "|" + cur_height);
       $('#header').toggle();
       $('#footer').toggle();
       if (!fullscreen){
@@ -97,44 +96,114 @@ CMDBappControllers.controller('graphCtrl', function($scope, $http, $location, $r
              $scope.message = "Error : " + err.data.message.code + " - ";
          });
 
-    }
+    };
 
+    $scope.initGraph = function(){
+        console.log("Graph Controler - Init");
 
-//========================================================
-// following code is used when page is loading to fill the table
-//---------------------------------------------------------
-    console.log("Graph Controller");
-     var config = {};
-
-     var req = $http.get("api/graph/" + instanceId)
-        .then( function successCallbak(response){
-            console.log("Back from Server with success ! > " + response.status);
-             // Todo : Create Alert windows if status is not 200
-             if (response.status != 200){
-                $scope.message = response.status;
-             } else {
+        getRelationsList($http, instanceId, function(error, relations){
+            if (error == null){
                 $scope.heading = "Generate Graph";
-                $scope.relations = response.data; 
-                $scope.$watch(function () {
-                     $scope.filteredItems = $scope.$eval("relations | filter:{attributes: thefilter}");
-                });  
+                $scope.relations = relations;
+                $scope.$watch(function(){
+                    $scope.filteredItems = $scope.$eval("relations | filter:{attributes: thefilter}");
+                });
+                produceVis(relations, function(thenetwork){
+                    network = thenetwork;
 
-                var graphloaded = false;
-                network = produceVis($scope.relations);
+                    //=======================================================================
+                    // Network Event Manager
+                    //=======================================================================
 
-        // ToDo : Create Event Handler to manage end of graphing and update the Header...
 
-                network.fit();
+                    var doubleClickTime = 0;
+                    var threshold = 200;
 
-                $scope.footermessage = "";
 
-             };
-        }, function errorCallback(err){
-             console.log("Something goes wrong with in the login process..." + err.data);
-             $scope.message = "Error : " + err.data.message.code + " - ";
+                     network.on('afterDrawing', function(properties) {
+                     });
+
+                    network.on('doubleClick', function(properties){
+                        var nodeId = properties.nodes;
+                        console.log("Double Click : " + nodeId.valueOf());
+                        doubleClickTime = new Date();
+                        GraphAppend(nodeId);
+                    });
+
+                    network.on('click', function(properties){
+                        var t0 = new Date();
+                        if (t0 - doubleClickTime > threshold) {
+                            setTimeout(function () {
+                                if (t0 - doubleClickTime > threshold) {
+                                    doOnClick(properties);
+                                }
+                            },threshold);
+                        }
+                    });
+
+
+                    var doOnClick = function(properties) {
+                        var nodeId = properties.nodes;
+                        if (nodeId.length != 0){
+                            console.log('click on Node : ' + nodeId.valueOf());
+                            ModalDetails(nodeId.valueOf());       
+                        };
+                    };
+
+
+                });                
+            } else {
+                $scope.message = 'Error : ' + error.message;
+            };
+
         });
+    };
+
+    GraphAppend = function(InstanceId){
+        console.log("Append graph with : "+InstanceId);
+        // getRelationsList($http, InstanceId, function(error, relations){
+        //     if (error == null){
+        //         produceVis(relations, function(thenetwork){
+
+        //         });
+        //     } else {
+
+        //     }
+        // });
+    };
+
+
+
+
+
 });
 
+//*********************************************************************************************************************************************
+
+/*======================================
+/ Call API to get relations List
+======================================*/
+
+var getRelationsList = function($http, Id, next){
+    var req = $http.get("api/graph/"+Id)
+        .then( function successCallbak(response){
+        console.log("Back from Server with success ! : " + response.status);
+            if (response.status != 200){
+                next({
+                        status: response.status,
+                        message: response.data
+                });
+            } else {
+                next(null, response.data);
+            }
+
+        }, function errorCallback(err){
+            next({
+                status: response.status,
+                message: err.data
+            })
+        });
+};
 
 /*=====================================
 * Produce de Visualtion Network
@@ -142,7 +211,7 @@ CMDBappControllers.controller('graphCtrl', function($scope, $http, $location, $r
 
 var produceVis = function(relationsList,next){
 
-    var CIObjects = new Array();
+//    var CIObjects = new Array();
 
 // put ALL CIs involved in the relation List... (duplicate CI in the Array)
 
@@ -175,6 +244,9 @@ var produceVis = function(relationsList,next){
         };
     };
 
+    ds_nodes.clear();
+    ds_edges.clear();
+
     for (var i = 0; i < CIObjects.length; i++) {
             ds_nodes.add({
                 id: CIObjects[i].text,
@@ -200,73 +272,52 @@ var produceVis = function(relationsList,next){
         })
     };
 
-  // create a network
-  var container = document.getElementById('mynetwork');
-  var configurator = document.getElementById('configurator');
-  var data= {
-    nodes: dv_nodes,
-    edges: dv_edges
-  };
+      // create a network
+      var container = document.getElementById('mynetwork');
+      var configurator = document.getElementById('configurator');
+      var data= {
+        nodes: dv_nodes,
+        edges: dv_edges
+      };
 
   
-  var network = new vis.Network(container, data, options); 
+    var network = new vis.Network(container, data, options); 
 
-
-//=======================================================================
-// Network Event Manager
-//=======================================================================
-
- network.on('afterDrawing', function(properties) {
-//    console.log('Drawing done !');
- });
-
-
-
-// network.on( 'dragEnd', function(properties) {
-//     alert('Drag End ' + JSON.stringify(network.getViewPosition()));
-// });
-
-
-network.on('click', function(properties){
-    var nodeId = properties.nodes;
-    if (nodeId.length != 0){
-        console.log('click on Node : ' + nodeId.valueOf());
-        ModalDetails(nodeId.valueOf());       
-    };
-});
-
-
-return(network); 
+    next(network);                                              // Exit and next step...
 };
 
-    var findInstanceId = function(myarray, value) {
-        var result = $.grep(myarray, function(e){ return (e.text == value); });
-        return((result.length != 0));
-    };
 
-    var findClassName = function(myarray, value) {
-        var result = $.grep(myarray, function(e){ return (e.name == value); });
-        return((result.length != 0));
-    };
+//================== Some other usefull functions =============================================================
 
-    var isInFilterClass = function(myarray, classname){
-        var result = $.grep(myarray, function(e) {return (e.name == classname); });
-        return(result[0].selected);
-    };
 
-    var isInFilterImpact = function(edges){
-        if ( filterImpactOnly ){
-            return(!edges);
-        } else {
-            return(true);
-        }       
-    };
+var findInstanceId = function(myarray, value) {
+    var result = $.grep(myarray, function(e){ return (e.text == value); });
+    return((result.length != 0));
+};
 
-    var getrelations = function(myarray){
+var findClassName = function(myarray, value) {
+    var result = $.grep(myarray, function(e){ return (e.name == value); });
+    return((result.length != 0));
+};
+
+var isInFilterClass = function(myarray, classname){
+    var result = $.grep(myarray, function(e) {return (e.name == classname); });
+    return(result[0].selected);
+};
+
+var isInFilterImpact = function(edges){
+    if ( filterImpactOnly ){
+        return(!edges);
+    } else {
+        return(true);
+    }       
+};
+
+var getrelations = function(myarray){
         //
         //ToDo - Need to include the injected object attributes for Source and Destination in CSV
         //
-            ciarray = myarray;
-         return(ciarray);
-    };
+        ciarray = myarray;
+     return(ciarray);
+};
 

@@ -2,11 +2,13 @@ var express = require('express');
 var path = require('path');
 var favicon = require('serve-favicon');
 var expresslogger = require('morgan');
-var winston = require('winston');
+
+var logger=('/routes/utils/logger');
+
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var session = require('express-session');
-var RedisStore = require('connect-redis')(session);
+//var RedisStore = require('connect-redis')(session);
 
 var routes = require('./routes/index');
 var users = require('./routes/users');
@@ -37,13 +39,6 @@ app.use(session({
   resave: true,
   saveUninitialized: true
 }));
-
-  var logger = new (winston.Logger)({
-    transports: [
-      new (winston.transports.Console)(),
-      new (winston.transports.File)({ filename: 'CMDBApp.log' })
-    ]
-  });
 
 app.use('/', routes);
 app.use('/users', users);
@@ -87,4 +82,5 @@ app.use(function(err, req, res, next) {
 });
 
 
-module.exports = app;
+module.exports =  app;
+

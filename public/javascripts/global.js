@@ -6,6 +6,7 @@
 
 var ds_nodes = new vis.DataSet();
 var ds_edges = new vis.DataSet();
+var CIObjects = new Array();
 
 var dv_nodes = new vis.DataView(ds_nodes, {
      filter: function (item) {

@@ -42,6 +42,7 @@ CMDBappControllers.controller('queryCtrl', function($scope, $http, $location, $r
 
     nodesClassList.splice(0,nodesClassList.length);
     edgesClassList.splice(0,edgesClassList.length);
+    CIObjects.splice(0,CIObjects.length);
 
 // Get Default values
 

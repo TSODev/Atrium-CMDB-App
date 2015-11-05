@@ -7,16 +7,7 @@ var router = express.Router();
 var _ = require('underscore');
 var superagent = require('superagent');
 
-var winston = require('winston');
-  var logger = new (winston.Logger)({
-    transports: [
-      new (winston.transports.Console)({level: 'info'}),
-      new (winston.transports.File)({ filename: 'CMDBApp.log' })
-    ]
-  });
-
-
-//var sa2 = require('superagent');
+var logger = require('./utils/logger');
 
 // // route middleware that will happen on every request
 // router.use(function(req, res, next) {
@@ -32,7 +23,7 @@ var winston = require('winston');
 
 var CallAPI = function(url,next){
 
-    logger.log('info', "Call Api with : " + url);
+    logger.info("Call Api with : " + url);
     superagent.get(url)
         .type('application/json')
         .timeout(5000)                                                // 10s timeout
@@ -54,7 +45,7 @@ var publishdata = function(req, res, data){
 
 var askforfield = function(req, index, InstanceId, fields, next){
 
-    logger.log('debug', "Ask for Fields : " + InstanceId + " - " + fields);
+    logger.debug("Ask for Fields : " + InstanceId + " - " + fields);
     var info = new Object();
     var arjwt = req.session.jwt;
     var servername = req.session.servername;
@@ -89,9 +80,9 @@ var askforfield = function(req, index, InstanceId, fields, next){
         });
 }
 
-var getgraph = function(req, InstanceId, next){
+var getgraph = function(req, InstanceId, level, next){
 
-    logger.log('debug','GetGraph for : ' + InstanceId);
+    logger.debug('Get graph info for : ' + InstanceId);
 
     var arjwt = req.session.jwt;
     var servername = req.session.servername;
@@ -102,7 +93,7 @@ var getgraph = function(req, InstanceId, next){
                 "/graph?rel=(BMC_BaseRelationship,BMC.CORE,"+ req.cookies.rel + ")" +
                 "&cl=(BMC_BaseElement,BMC.CORE)"+
                 "&mode="+ req.cookies.cl +
-                "&level=" + req.cookies.level;
+                "&level=" + level;
 
     var relations = new Array();
 
@@ -194,7 +185,9 @@ router.get('/:ClassId', function(req, res, next) {
 // api/InstanceId : Serving InstanceId details
 //===============================================
 router.get('/details/:Id', function (req, res, next) {
+
     var Id = req.params.Id;
+    logger.debug("Get details for : " + Id);
 
     var arjwt = req.session.jwt;
     var servername = req.session.servername;
@@ -283,8 +276,9 @@ router.get('/details/:Id', function (req, res, next) {
 router.get('/graph/:Id', function (req, res, next) {
 
      var Id = req.params.Id;
+     var level = req.cookies.level;
 
-     var relations = getgraph(req, Id, function(status, data){
+     var relations = getgraph(req, Id, level, function(status, data){
         if (status == 200) {
 
             // Need to Inject some details about Source and Destination 
@@ -342,6 +336,7 @@ router.get('/graph/:Id', function (req, res, next) {
 //===============================================
 router.get('/user/:Id', function (req, res, next) {
     var Id = req.params.Id;
+    logger.debug("Get User info for : " + Id);
 
     var arjwt = req.session.jwt;
     var servername = req.session.servername;
