@@ -2,7 +2,7 @@
 // graph Page
 //=============
 
-CMDBappControllers.controller('graphCtrl', function($scope, $http, $location, $routeParams){
+CMDBappControllers.controller('graphCtrl', function($scope, $http, $location, $routeParams, $rootScope){
     $scope.title = "CMDB - Graph";
     $scope.heading = "Loading";
 
@@ -76,6 +76,25 @@ CMDBappControllers.controller('graphCtrl', function($scope, $http, $location, $r
         network.fit();
     };
 
+    $scope.Logout = function(){
+        console.log("Logout");
+        var req = $http.post("api/logout")
+            .success(function(response){
+                if (response.status != 204){
+
+                } else {
+                    $rootScope.loggedInUser = null;
+                    console.log("Disconnected");                   
+                    $location.path('/login');
+                }
+
+            })
+            .error(function(err){
+                console/log("Something goes wrong with the logout process... "+ err.data);
+            })
+    };
+
+
 
     ModalDetails = function(instanceId){
      console.log("Looking for details for : " + instanceId);
@@ -101,6 +120,7 @@ CMDBappControllers.controller('graphCtrl', function($scope, $http, $location, $r
     $scope.initGraph = function(){
         console.log("Graph Controler - Init");
 
+//--Get the RealationList
         getRelationsList($http, instanceId, function(error, relations){
             if (error == null){
                 $scope.heading = "Generate Graph";
@@ -108,9 +128,12 @@ CMDBappControllers.controller('graphCtrl', function($scope, $http, $location, $r
                 $scope.$watch(function(){
                     $scope.filteredItems = $scope.$eval("relations | filter:{attributes: thefilter}");
                 });
+
+//-- Create the network for visualization.
                 produceVis(relations, function(thenetwork){
                     network = thenetwork;
 
+//-- Manage the network events
                     //=======================================================================
                     // Network Event Manager
                     //=======================================================================
@@ -120,15 +143,17 @@ CMDBappControllers.controller('graphCtrl', function($scope, $http, $location, $r
                     var threshold = 200;
 
 
-                     network.on('afterDrawing', function(properties) {
-                     });
+// Click and DoubleClick : Check if a second click occurs after the first one on a threshold time
 
                     network.on('doubleClick', function(properties){
-                        var nodeId = properties.nodes;
-                        console.log("Double Click : " + nodeId.valueOf());
-                        doubleClickTime = new Date();
-                        GraphAppend(nodeId);
+//                        var nodeId = properties.nodes;
+//                        console.log("Double Click : " + nodeId.valueOf());
+//                        doubleClickTime = new Date();
+//                        if (nodeId.length != 0){
+//                            GraphAppend(nodeId);
+//                        }
                     });
+
 
                     network.on('click', function(properties){
                         var t0 = new Date();
@@ -141,7 +166,6 @@ CMDBappControllers.controller('graphCtrl', function($scope, $http, $location, $r
                         }
                     });
 
-
                     var doOnClick = function(properties) {
                         var nodeId = properties.nodes;
                         if (nodeId.length != 0){
@@ -153,23 +177,26 @@ CMDBappControllers.controller('graphCtrl', function($scope, $http, $location, $r
 
                 });                
             } else {
-                $scope.message = 'Error : ' + error.message;
+                $scope.heading = 'Error : ' + error.message;
             };
 
         });
     };
 
+
+
+// Would like to add some CI and Relation to the network...
     GraphAppend = function(InstanceId){
         console.log("Append graph with : "+InstanceId);
-        // getRelationsList($http, InstanceId, function(error, relations){
-        //     if (error == null){
-        //         produceVis(relations, function(thenetwork){
+        getRelationsList($http, InstanceId, function(error, relations){
+            if (error == null){
+                produceVis(relations, function(thenetwork){
 
-        //         });
-        //     } else {
+                });
+            } else {
 
-        //     }
-        // });
+            }
+        });
     };
 
 
@@ -247,6 +274,8 @@ var produceVis = function(relationsList,next){
     ds_nodes.clear();
     ds_edges.clear();
 
+//-- Insert the nodes (should be unique)
+
     for (var i = 0; i < CIObjects.length; i++) {
             ds_nodes.add({
                 id: CIObjects[i].text,
@@ -256,6 +285,7 @@ var produceVis = function(relationsList,next){
             });
     };
 
+//-- insert edges between nodes
 
     for (var i = 0; i < relationsList.length; i++) {
         if (!findClassName(edgesClassList, relationsList[i].ClassId)){

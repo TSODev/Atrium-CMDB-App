@@ -9,6 +9,25 @@ CMDBappControllers.controller('cidetailsCtrl', function($scope, $http, $location
     console.log("Route params :" + JSON.stringify($routeParams));
     var instanceId = $routeParams.Id;
 
+    $scope.Logout = function(){
+        console.log("Logout");
+        var req = $http.post("api/logout")
+            .success(function(response){
+                if (response.status != 204){
+
+                } else {
+                    $rootScope.loggedInUser = null;
+                    console.log("Disconnected");                   
+                    $location.path('/login');
+                }
+
+            })
+            .error(function(err){
+                console/log("Something goes wrong with the logout process... "+ err.data);
+            })
+    };
+
+
 
 //========================================================
 // following code is used when page is loading to fill the table

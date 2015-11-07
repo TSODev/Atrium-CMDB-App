@@ -2,7 +2,7 @@
 // query Page
 //=============
 
-CMDBappControllers.controller('queryCtrl', function($scope, $http, $location, $routeParams, $cookies, $cookieStore){
+CMDBappControllers.controller('queryCtrl', function($scope, $http, $location, $routeParams, $cookies, $cookieStore, $rootScope){
     $scope.title = "CMDB - Query";
     $scope.heading = "Loading";
     var selectedclass = 'BMC_ComputerSystem';
@@ -34,6 +34,26 @@ CMDBappControllers.controller('queryCtrl', function($scope, $http, $location, $r
         console.log("select change : selection is " + $scope.class.values['Class Name']);
         selectedclass = $scope.class.values['Class Name'];
     };
+
+    $scope.Logout = function(){
+        console.log("Logout");
+        var req = $http.post("api/logout")
+            .success(function(response){
+                if (response.status != 204){
+
+                } else {
+                    $rootScope.loggedInUser = null;
+                    console.log("Disconnected");                   
+                    $location.path('/login');
+                }
+
+            })
+            .error(function(err){
+                console/log("Something goes wrong with the logout process... "+ err.data);
+            })
+    };
+
+
 
 // Clear the graph datastore
 

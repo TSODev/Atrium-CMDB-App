@@ -278,12 +278,17 @@ router.get('/graph/:Id', function (req, res, next) {
      var Id = req.params.Id;
      var level = req.cookies.level;
 
+     if(Id == null){
+        publishdata(req, res , {
+                                    status: 500,
+                                    data: null
+        });
+     }
+
      var relations = getgraph(req, Id, level, function(status, data){
         if (status == 200) {
 
-            // Need to Inject some details about Source and Destination 
-
-
+            // Need to Inject some details about Source and Destination
             var requested_fields = ['InstanceId', 'Name', 'ClassId', 'Source.ClassId', 'Destination.ClassId']; 
 
             var call_counter = 0;
@@ -467,6 +472,80 @@ router.post('/login', function(req, res) {
             };
         });
 });
+
+
+//====================================================================================================================
+// api/logout : Serving logout request from Client
+//===============================================
+router.get('/logout', function(req, res, next){
+    console.log("GET API-Logout");
+   next();
+});
+
+router.post('/logout', function(req, res) {
+    var arjwt = req.session.jwt;
+    var data = {
+        username: req.body.username,
+        password: req.body.password
+    };
+
+    var option = {
+        path: "/api/jwt/logout",
+        host: req.session.servername,
+        port: req.session.port,
+        method: "POST",
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'Authorization': "AR-JWT " + arjwt
+        }
+    };
+    req.session.servername = option.host;
+    req.session.port = option.port;
+
+    var url = "https://"+option.host+":"+option.port+option.path;
+
+    logger.debug('Logout POST on :' + url);
+
+    superagent.post(url)
+        .type('application/x-www-form-urlencoded')
+        .set('Authorization', 'AR-JWT ' + arjwt)
+        .end(function(e,response){
+            if (e == null){
+                status = response.status;
+                if (status == 204){
+                    req.session.jwt = null;
+                    req.session.servername = null;
+                    req.session.portnumber = null;
+                    res.send({
+                        status : 204,
+                        data : response
+                    });
+                    res.status(status);
+                    res.end();
+                } else {
+                    console.log("Error : Request status : "+ status);
+                    //res.json(response);
+                    res.send({
+                        status : status,
+                        data : response
+                    });
+                    res.status(status);
+                    res.end();
+                }
+            }
+            else {
+                console.log("Cannot complete the request - " + e );
+                res.send({
+                    status: 500,
+                    data: e
+                });
+                res.status(500);
+                res.end();
+            };
+        });
+});
+
+
 
 //====================================================================================================================
 // api/utilities/Dataset : Serving Dataset Get Info

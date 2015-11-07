@@ -31,6 +31,10 @@ CMDBapp.config(['$routeProvider',
                     templateUrl: '/partials/login',
                     controller: 'loginProcess'
              }).
+             when('/logout', {
+                    templateUrl: '/partials/logout',
+                    controller: 'defaultCtrl'
+             }).
             when('/details/:Id', {
                 templateUrl: '/partials/details',
                 controller: 'cidetailsCtrl'

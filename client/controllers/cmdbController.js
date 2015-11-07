@@ -1,7 +1,7 @@
 //====================
 // cmdb Page
 //====================
-CMDBappControllers.controller('cmdbCtrl', function($scope, $http, $location, $routeParams){
+CMDBappControllers.controller('cmdbCtrl', function($scope, $http, $location, $routeParams, $rootScope){
     $scope.title = $routeParams.class;
     $scope.heading = "Loading";
     console.log('Param : ' + JSON.stringify($routeParams));
@@ -61,6 +61,25 @@ CMDBappControllers.controller('cmdbCtrl', function($scope, $http, $location, $ro
         }
 
     }
+
+    $scope.Logout = function(){
+        console.log("Logout");
+        var req = $http.post("api/logout")
+            .success(function(response){
+                if (response.status != 204){
+
+                } else {
+                    $rootScope.loggedInUser = null;
+                    console.log("Disconnected");                   
+                    $location.path('/login');
+                }
+
+            })
+            .error(function(err){
+                console/log("Something goes wrong with the logout process... "+ err.data);
+            })
+    };
+
 
 
 //========================================================

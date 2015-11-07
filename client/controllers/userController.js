@@ -1,7 +1,7 @@
 //============
 // User Page (index)
 //============
-CMDBappControllers.controller('userCtrl', function($scope, $http, $location, $cookies, $cookieStore){
+CMDBappControllers.controller('userCtrl', function($scope, $http, $location, $cookies, $cookieStore, $rootScope){
     $scope.title = "";
     console.log("User Controller");
 
@@ -39,6 +39,24 @@ CMDBappControllers.controller('userCtrl', function($scope, $http, $location, $co
     $scope.Cancel = function(){
         $location.path('/query');
     }
+
+    $scope.Logout = function(){
+        console.log("Logout");
+        var req = $http.post("api/logout")
+            .success(function(response){
+                if (response.status != 204){
+
+                } else {
+                    $rootScope.loggedInUser = null;
+                    console.log("Disconnected");                   
+                    $location.path('/login');
+                }
+
+            })
+            .error(function(err){
+                console/log("Something goes wrong with the logout process... "+ err.data);
+            })
+    };
 
 });
 
