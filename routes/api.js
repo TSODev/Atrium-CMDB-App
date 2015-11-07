@@ -108,16 +108,24 @@ var getgraph = function(req, InstanceId, level, next){
 
                     var data = JSON.parse(response.text); 
                     var relationList = data.relationList; 
-                    var instances = relationList.instances;
+                    var instances = relationList.instances;             //ToDo Check nb of relation and decrease level if too high
 
                     var nbrel = instances.length;
-                    for (index=0 ; index < nbrel; index++){
-                        if ( index == nbrel){ console.log("Why are you coming here ???")};
-                        var r = instances[index].attributes;                 
-                            relations.push(r);
-                    };
 
-                    next(status, relations);
+                    logger.debug("Number of relations in graph : " + nbrel);
+
+                    if ( nbrel > 200 ){
+                        getgraph(req, InstanceId, level-1, next);
+                    } else {
+                         for (index=0 ; index < nbrel; index++){
+                            if ( index == nbrel){ console.log("Why are you coming here ???")};
+                            var r = instances[index].attributes;                 
+                                relations.push(r);
+                            };
+                        next(status, relations);                       
+                    }
+
+
 
                 } else {
                     next(status, response);

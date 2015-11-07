@@ -123,7 +123,8 @@ var options = {
 // ---- LAYOUT ----
 
   layout:{
-    hierarchical: false
+    hierarchical: false,
+    improvedLayout: false
   },
 
 // ---- INTERACTION ----
