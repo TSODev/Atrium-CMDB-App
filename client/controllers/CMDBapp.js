@@ -100,6 +100,10 @@ CMDBappControllers.controller('defaultCtrl', function($scope, $http, $location, 
 
     $scope.preftitle = "CMDB App - Preferences";
 
+    $scope.version = "0.3";
+    $scope.build = "145";
+    $scope.license = "-tbd-";
+
 //Info : Cookies are set at Home page.
 
         $scope.namespace = $cookies.get('namespace');
