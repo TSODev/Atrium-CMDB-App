@@ -101,6 +101,20 @@ CMDBappControllers.controller('queryCtrl', function($scope, $http, $location, $r
         $cookies.put('level' , $scope.level);
     }; 
 
+    if ($cookies.get('statemaxrel')){
+        $scope.statemaxrel = $cookies.get('statemaxrel');
+    } else {
+        $scope.statemaxrel = false;
+        $cookies.put('statemaxrel' , $scope.statemaxrel);
+    }; 
+
+    if ($cookies.get('maxrel')){
+        $scope.maxrel = parseInt($cookies.get('maxrel'));
+    } else {
+        $scope.maxrel = 200;
+        $cookies.put('maxrel' , $scope.maxrel);
+    }; 
+
 
 //========================================================
 // following code is used to get the ClassName List

@@ -82,7 +82,7 @@ th
 }
 .control-label
 {
-    color: #F86E00;
+    color: #294157;
 }
 .login-title
 {
@@ -96,6 +96,10 @@ th
     background-color: #00A79D;
     border-color: #016F69;
 }
+.row
+{
+    padding-top: 15px;
+}
 .form-control:focus
 {
     border-color: #3690D7;
@@ -105,8 +109,8 @@ th
 }
 .profile-img
 {
-    width: 120px;
-    height: 120px;
+    width: 100px;
+    height: 100px;
     margin: 0 auto 10px;
     display: block;
     -moz-border-radius: 50%;

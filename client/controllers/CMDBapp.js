@@ -101,6 +101,13 @@ CMDBappControllers.controller('defaultCtrl', function($scope, $http, $location, 
         $scope.rel = $cookies.get('rel');
         $scope.cl = $cookies.get('cl');
         $scope.level = $cookies.get('level'); 
+        console.log("CB : "+ $cookies.get('statemaxrel') + ' - ' + $scope.statemaxrel);
+        if ($cookies.statemaxrel == true){
+            $('.cb').prop('checked', true);
+        }else{
+            $('.cb').prop('checked', false);
+        }
+        $scope.maxrel = parseInt($cookies.get('maxrel'));
 
     $scope.getSystemInfo = function(){
         console.log("Ask for System Info...");
@@ -134,8 +141,13 @@ CMDBappControllers.controller('defaultCtrl', function($scope, $http, $location, 
         $cookies.put('rel', $scope.rel);
         $cookies.put('cl', $scope.cl);
         $cookies.put('level', $scope.level);  
+        $cookies.put('statemaxrel', $scope.statemaxrel);
+        $cookies.put('maxrel', parseInt($scope.maxrel));
         console.log("Parameters saved in cookies."); 
         $location.path('query');     
+    };
+
+    $scope.togglemaxrel = function(){
     };
 
 });
