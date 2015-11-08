@@ -1,10 +1,13 @@
-.container(ng-init="initQuery()")
+container
   .container-fluid  
     .row
       nav.navbar.navbar-default(role='navigation')
         .navbar-inner
           a.navbar-brand
             img.navlogo(alt="bmc" src="images/it-service-management.png")
+          ul.nav.navbar-nav
+            li
+              a(ng-click="goHome()",href='#/query') Home
           ul.nav.navbar-nav.pull-right
             li.dropdown
               a.dropdown-toggle(data-toggle='dropdown')
@@ -25,21 +28,22 @@
   .panel-heading
     h5 {{ heading }}
   .panel-body
-    h3 {{title}}
-      form(role='form')
+    h3 {{ usertitle }}
+    .container()
+    .container
       .row
         .col-md-4
-          .form-group
-            .form-group
-              h4.help-block Define the request with a root class
-              label.control-label(for='formInput23') Root Class
-              select#formInput23.form-control(ng-model="class", ng-options="e.values['Class Name'] for e in entries", ng-change="update()" )
-                option ---- Choose a Class ----
-      .row
-        .col-md-8          
-          label.control-label Additional query
-          textarea.form-control(ng-model="addquery", rows='1', placeholder="not implemented yet")
-      h4.italic.help-block use expression like ('field' = "data") .
-      button.btn.btn-primary(ng-click="submitCI()", type='submit') Continue   
-  .panel-footer
-    h5 Footer - {{ footer }}
+        .col-sm-6.col-md-4
+          .thumbnail
+            img(src='images/TSODev_logo.png', alt='TSODev')
+            .caption
+              h3 API CMDB Test App
+              p
+                | This application is a proove of concept using bmc Atrium CDMB RestAPI to provide graphical results.
+              pre.
+                \nversion 0.3 build 145                
+              p
+                a.btn.btn-primary(ng-click="QuitAbout()", role='button') Ok
+              p by TSODev - November 2015
+        .col-md-4
+

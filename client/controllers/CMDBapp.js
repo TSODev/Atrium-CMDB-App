@@ -35,6 +35,10 @@ CMDBapp.config(['$routeProvider',
                     templateUrl: '/partials/logout',
                     controller: 'defaultCtrl'
              }).
+             when('/About', {
+                    templateUrl: '/partials/about',
+                    controller: 'defaultCtrl'
+             }).
             when('/details/:Id', {
                 templateUrl: '/partials/details',
                 controller: 'cidetailsCtrl'
@@ -58,8 +62,10 @@ CMDBapp.config(['$routeProvider',
 //---------
 
 CMDBapp.run(function($rootScope, $location) {
+
     $rootScope.$on( "$routeChangeStart", function(event, next, current) {
         console.log("route change start detected ! ");
+        $rootScope.previousPage = location.pathname;
         if ($rootScope.loggedInUser == null) {
             // no logged user, redirect to /login
             if ( next.templateUrl === "/partials/login") {
@@ -88,7 +94,7 @@ var CMDBappControllers = angular.module('CMDBappControllers', []);
 //============
 // Home Page (index)
 //============
-CMDBappControllers.controller('defaultCtrl', function($scope, $http, $location, $cookies, $cookieStore){
+CMDBappControllers.controller('defaultCtrl', function($scope, $http, $location, $cookies, $cookieStore, $rootScope){
     $scope.title = "";
     console.log("Home Controller");
 
@@ -130,9 +136,7 @@ CMDBappControllers.controller('defaultCtrl', function($scope, $http, $location, 
     };  
 
     $scope.Update = function(){
-
     };      
-
 
     $scope.SavePrefs = function(){
         console.log("Dataset : "+ JSON.stringify($scope.dataset));
@@ -149,6 +153,10 @@ CMDBappControllers.controller('defaultCtrl', function($scope, $http, $location, 
 
     $scope.togglemaxrel = function(){
     };
+
+    $scope.QuitAbout = function(){
+        $location.path('query');
+    }
 
 });
 
