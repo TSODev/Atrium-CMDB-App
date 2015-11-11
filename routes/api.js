@@ -87,6 +87,8 @@ var getgraph = function(req, InstanceId, level, next){
     var arjwt = req.session.jwt;
     var servername = req.session.servername;
     var port = req.session.port;
+    var maxrel = req.cookies.maxrel;
+    var limitnbrel = req.cookies.statemaxrel;
 
     var path = "/api/cmdb/v1/instance/"+req.cookies.dataset+"/"+req.cookies.namespace+"/BMC_BaseElement/";
     var url = "https://"+servername+":"+port+path + InstanceId + 
@@ -114,16 +116,18 @@ var getgraph = function(req, InstanceId, level, next){
 
                     logger.debug("Number of relations in graph : " + nbrel);
 
-                    if ( nbrel > 200 ){
-                        getgraph(req, InstanceId, level-1, next);
-                    } else {
+//                     if ( nbrel > maxrel ){
+//                         if (limitnbrel == true){
+// //                            getgraph(req, InstanceId, level-1, next);                            
+//                         }
+//                     } else {
                          for (index=0 ; index < nbrel; index++){
                             if ( index == nbrel){ console.log("Why are you coming here ???")};
                             var r = instances[index].attributes;                 
                                 relations.push(r);
                             };
                         next(status, relations);                       
-                    }
+//                    }
 
 
 
